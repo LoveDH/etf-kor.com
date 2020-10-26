@@ -6,8 +6,8 @@ import pymysql.cursors
 
 connection = pymysql.connect(
     host='localhost',
-    user='lovedh',
-    password='123',
+    user='root',
+    password='rla369',
     db='etfkor',
     charset='utf8')
 
@@ -17,7 +17,7 @@ cursor.execute(sql)
 
 df = pd.DataFrame(cursor.fetchall(), columns = ['날짜','NAV','시가','고가','저가','종가','거래량','거래대금','기초지수'])
 connection.close()
-print(df)
+
 fig = go.Figure(data=[go.Candlestick(x=df['날짜'],
                 open=df['시가'],
                 high=df['고가'],

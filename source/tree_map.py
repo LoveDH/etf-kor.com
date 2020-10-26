@@ -4,6 +4,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 import pandas as pd
+import numpy as np
 
 import pymysql
 from sqlalchemy import create_engine
@@ -28,13 +29,14 @@ df = pd.DataFrame(cursor.fetchall(), columns=['Symbol','Name','now_price','ex_pr
 connection.close()
 
 
-fig = px.scatter(df, x="Symbol", y="yield_from_ex",
-                 size="market_cap", color="type", hover_name="Name",
-                 log_x=False, size_max=60)
+fig = px.treemap(df, path=['type','Name'], values='market_cap',
+                  color='yield_from_ex', hover_data=['Name'],
+                  color_continuous_scale='RdBu',
+                  color_continuous_midpoint=0)
 
 app.layout = html.Div([
     dcc.Graph(
-        id='시가총액과 수익률변화',
+        id='ETF유형별 등락률',
         figure=fig
     )
 ])
