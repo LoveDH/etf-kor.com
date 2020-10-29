@@ -60,7 +60,7 @@ def get_stock_prices(Symbol):
     try:
         print(Symbol, end=' ')
         stock_df = stock.get_etf_ohlcv_by_date(config['LAST_UPDATE'], today, Symbol)
-        stock_df.to_sql(name=Symbol, con=conn, if_exists='replace', index=True)
+        stock_df.to_sql(name=Symbol, con=conn, if_exists='append', index=True)
     except:
         print(Symbol+':데이터 불러오기 실패', end= ' ')
 
