@@ -41,6 +41,16 @@ df = pd.DataFrame(cursor.fetchall(), columns=['Symbol','Name','now_price','ex_pr
 symbols_list = pd.DataFrame(df, columns=['Symbol','Name'])
 type_list = df['type'].unique()
 
+fig_tree_map = px.treemap(df, path=['type','Name'], values='market_cap',
+                  color='yield_from_ex', hover_data=['Name'],
+                  color_continuous_scale='RdBu',
+                  color_continuous_midpoint=0)
+
+
+fig_scatter_map = px.scatter(df, x="Symbol", y="yield_from_ex",
+                 size="market_cap", color="type", hover_name="Name",
+                 log_x=False, size_max=60)
+
 # Main Div (1st level)
 app.layout = html.Div([
 
@@ -107,8 +117,21 @@ app.layout = html.Div([
 
         ], style={'margin': '2% 0% 6% 10%', 'float': 'center'}, className='row'),
     
-    html.Div([dcc.Graph(id='data-plot2')], className='row')
+    html.Div([dcc.Graph(id='data-plot2')], className='row'),
 
+    html.Div([
+    dcc.Graph(
+        id='ETF유형별 등락률 (스캐터)',
+        figure=fig_scatter_map
+    ),
+    dcc.Graph(
+        id='ETF유형별 등락률 (트리맵)',
+        figure=fig_tree_map
+    ),
+    ])
+
+
+    
 ], className='ten columns offset-by-one')
 
 @app.callback(Output('symbols-dropdown1', 'options'),
