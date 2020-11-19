@@ -52,58 +52,8 @@ app.layout = html.Div(
         ]
 
 )
-# # Callback for timeseries price
-# @app.callback(Output('timeseries', 'figure'),
-#               [Input('stockselector', 'value')])
-# def update_graph(selected_dropdown_value):
-#     trace1 = []
-#     df_sub = df
-#     for stock in selected_dropdown_value:
-#         trace1.append(go.Scatter(x=df_sub[df_sub['stock'] == stock].index,
-#                                  y=df_sub[df_sub['stock'] == stock]['value'],
-#                                  mode='lines',
-#                                  opacity=0.7,
-#                                  name=stock,
-#                                  textposition='bottom center'))
-#     traces = [trace1]
-#     data = [val for sublist in traces for val in sublist]
-#     figure = {'data': data,
-#               'layout': go.Layout(
-#                   colorway=["#5E0DAC", '#FF4F00', '#375CB1', '#FF7400', '#FFF400', '#FF0056'],
-#                   template='plotly_dark',
-#                   paper_bgcolor='rgba(0, 0, 0, 0)',
-#                   plot_bgcolor='rgba(0, 0, 0, 0)',
-#                   margin={'b': 15},
-#                   hovermode='x',
-#                   autosize=True,
-#                   title={'text': 'Stock Prices', 'font': {'color': 'white'}, 'x': 0.5},
-#                   xaxis={'range': [df_sub.index.min(), df_sub.index.max()]},
-#               ),
 
-#               }
-
-#     return figure
 
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-# dcc.Graph(id='timeseries',
-#           config={'displayModeBar': False},
-#           animate=True,
-#           figure=px.line(df,
-#                          x='날짜',
-#                          y='종가',
-#                          color='stock',
-#                          template='plotly_dark').update_layout(
-#                                    {'plot_bgcolor': 'rgba(0, 0, 0, 0)',
-#                                     'paper_bgcolor': 'rgba(0, 0, 0, 0)'})
-#                                     )
-# fig = go.Figure(data=[go.Candlestick(x=df['날짜'],
-#                 open=df['시가'],
-#                 high=df['고가'],
-#                 low=df['저가'],
-#                 close=df['종가'])])
-
-# # Run the app
-# if __name__ == '__main__':
-#     app.run_server(debug=True)

@@ -1,6 +1,6 @@
 beautifulsoup4
 bs4
-dash
+dash==1.17.0
 numpy
 pandas
 PyMySQL
