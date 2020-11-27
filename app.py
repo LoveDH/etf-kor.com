@@ -14,7 +14,6 @@ import lib.getfromDB as gd
 app = dash.Dash(__name__)
 #, external_stylesheets=external_stylesheets)
 
-index_period = 30
 tab_style = {'color': 'white','padding':'6px'}
 selected_tab_style = {'padding':'6px','color': 'white','backgroundColor': '#2e2e2e'}
 
@@ -33,9 +32,9 @@ home = [
         html.Table([
             html.Tr([
                 html.Td(style={'width':'5%'}),
-                html.Td([html.H5('코스피')],style={'width':'30%','textAlign':'center'}),
-                html.Td([html.H5('코스닥')],style={'width':'30%','textAlign':'center'}),
-                html.Td([html.H5('S&P500')],style={'width':'30%','textAlign':'center'}),
+                html.Td([html.H4('코스피')],style={'width':'30%','textAlign':'center'}),
+                html.Td([html.H4('코스닥')],style={'width':'30%','textAlign':'center'}),
+                html.Td([html.H4('S&P500')],style={'width':'30%','textAlign':'center'}),
                 html.Td(style={'width':'5%'})
             ]),
             html.Td(style={'width':'5%'}),
@@ -58,7 +57,30 @@ home = [
                 )
             ],style={'width':'30%'}),
             html.Td(style={'width':'5%'})
-        ],style={'width':'100%'})
+        ],style={'width':'100%'}),
+        html.Div(style={'padding':'10px'}),
+        html.Table([
+            html.Tr([
+                html.Td([
+                    gd.get_etf_table_by_market_cap('mc')
+                ]),
+                html.Td(style={'width':'2%'}),
+                html.Td([
+                    html.Tr([gd.get_etf_table_by_market_cap('yield_top')]),
+                    html.Tr([gd.get_etf_table_by_market_cap('yield_bottom')]),
+                ]),
+                html.Td(style={'width':'2%'}),
+                html.Td([
+                    html.Tr([gd.get_mini_treemap()]),
+                    html.Tr([gd.get_etf_pie_chart()])
+                ],style={'width':'25%'}),
+            ]),
+            html.Tr([
+                html.Td(),
+                html.Td(),
+                html.Td(),
+            ]),
+        ])
     ]
 
 app.layout = html.Div([
@@ -72,8 +94,9 @@ app.layout = html.Div([
                 dcc.Dropdown(id='symbols-search',
                     multi=False,
                     placeholder="ETF 종목명을 입력하세요.",
+                    value='',
                     style={'height': '30px','min_width':'200px','fontSize': 15,'textAlign': 'left'})
-            )
+                )
     ],style={'width':'50%'}),
     dcc.Tabs(id='tabs',children=[
         dcc.Tab(label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
@@ -98,6 +121,13 @@ def symbols_names_callback(value):
                      'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
     return options_list
 
+# @app.callback(Output('tabs-content-props', 'children'),
+#             [Input('symbols-search', 'value')])
+# def go_etf_info(value):
+#     if not value:
+#         return gd.get_etf_single_chart()
+     
+
 @app.callback(Output('tabs-content-props', 'children'),
               [Input('tabs', 'value')])
 def render_content(tab):
@@ -105,7 +135,6 @@ def render_content(tab):
         return home
     elif tab == 'tab-2':
         return gd.get_map_data()
-
     elif tab == 'tab-3':
         return html.Div([
             html.H3('Tab content 3')
