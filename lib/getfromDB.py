@@ -262,3 +262,5 @@ def get_etf_single_chart(code):
     result = dcc.Graph(figure=fig)
 
     return result
+
+

@@ -1,10 +1,11 @@
 import pandas as pd
 import json
-
 import pymysql
+from pykrx import stock
 from sqlalchemy import create_engine
+import getfromDB
 
-with open('../config.json', 'r') as f:
+with open('config.json', 'r') as f:
     config = json.load(f)
 
 HOSTNAME = config["MYSQL_INFO"]['HOSTNAME']
@@ -37,6 +38,22 @@ country_dict = {'USA':'미국','GBR':'영국','DEU':'벨기에','FRA':'프랑스
 majorStockIdx['Code'] = country_code
 majorStockIdx['Country'] = majorStockIdx['Code'].map(country_dict)
 majorStockIdx = majorStockIdx[['Symbol','Name','Country','Code','Last Price','Change','% Change']]
-
-
 majorStockIdx.to_sql(name='indices', con=conn, if_exists='replace', index=False)
+print('...지수 데이터 수집 완료')
+
+print('...포트폴리오 데이터 수집 중')
+symbols = getfromDB.etflist['Symbol']
+num_symbols = len(symbols)
+count = 1
+
+for symbol in symbols:
+    print("{} {}/{}".format(symbol, count, num_symbols))
+    try:
+        portfolio = stock.get_etf_portfolio_deposit_file(symbol)
+        portfolio.reset_index(inplace=True)
+        portfolio.to_sql(name=symbol+'_pf', con=conn, if_exists='replace', index=False)
+        count+=1
+    except:
+        print(symbol,'데이터 수집 불가')
+
+        
