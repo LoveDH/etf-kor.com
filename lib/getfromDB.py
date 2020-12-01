@@ -2,6 +2,7 @@ import pymysql
 from sqlalchemy import create_engine
 import json
 import pandas as pd
+from datetime import datetime
 
 import dash
 import dash_table
@@ -10,6 +11,7 @@ import dash_html_components as html
 import plotly.graph_objs as go
 import plotly.express as px
 
+year = datetime.today().strftime('%Y')
 
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -36,23 +38,30 @@ sql = "select Symbol,Name from etfkor.etfList"
 cursor.execute(sql)
 etflist = pd.DataFrame(cursor.fetchall(), columns=['Symbol','Name'])
 
+# HOME 지수 그래프 호출
 def get_indice_data(name,index_period=30):
     connection = pymysql.connect(
-    host=HOSTNAME,
-    user=USERNAME,
-    password=PASSWORD,
-    db=DATABASE,
-    charset=CHARSET1)
+        host=HOSTNAME,
+        user=USERNAME,
+        password=PASSWORD,
+        db=DATABASE,
+        charset=CHARSET1)
 
     cursor = connection.cursor()
-    sql = "select * from etfkor."+name
-    cursor.execute(sql)
-    try:
-        index_period = -index_period
-    except:
-        index_period = -30
-    df = pd.DataFrame(cursor.fetchall()[index_period:], columns=['Date', 'Close', 'Open', 'High', 'Low', 'Volume', 'Change'])
-    cursor.close()
+    if index_period == 'ytd': # ytd일 경우
+        sql = "select Date, Close, Open, High, Low from etfkor."+name+" WHERE YEAR(Date)='"+year+"';"
+        cursor.execute(sql)
+        df = pd.DataFrame(cursor.fetchall(), columns=['Date', 'Close', 'Open', 'High', 'Low'])
+        cursor.close()
+    else:
+        sql = "select Date, Close, Open, High, Low from etfkor."+name
+        cursor.execute(sql)
+        try:
+            index_period = -index_period
+        except:
+            index_period = -30
+        df = pd.DataFrame(cursor.fetchall()[index_period:], columns=['Date', 'Close', 'Open', 'High', 'Low'])
+        cursor.close()
     
     fig = go.Figure(data=[go.Candlestick(x=df['Date'],
                 open=df['Open'],
@@ -65,6 +74,7 @@ def get_indice_data(name,index_period=30):
     
     return fig
 
+# MAPS ETF 트리맵 호출
 def get_map_data():
     connection = pymysql.connect(
         host=HOSTNAME,
@@ -123,7 +133,7 @@ def get_map_data():
 
     return result_html
 
-
+# HOME 데이터 테이블 호출
 def get_etf_table_by_market_cap(by):
 
     connection = pymysql.connect(
@@ -136,15 +146,22 @@ def get_etf_table_by_market_cap(by):
     cursor = connection.cursor()
     cursor.execute(sql)
     df = pd.DataFrame(cursor.fetchall(), columns=['종목명','현재가','등락률','시가총액'])
-    if by == 'mc':
+
+    if by == '시가총액 TOP 10':
         df.sort_values(by='시가총액', ascending=False, inplace=True)
         df = df.head(20)
-    elif by == 'yield_top':
+    elif by == '등락률 TOP 10':
         df.sort_values(by='등락률', ascending=False, inplace=True)
         df = df.head(10)
-    elif by == 'yield_bottom':
+    elif by == '등락률 BOTTOM 10':
         df.sort_values(by='등락률', ascending=True, inplace=True)
         df = df.head(10)
+
+    # 데이터 정리
+    df['현재가'] = df['현재가'].apply(lambda x : "{:,}".format(int(x)))
+    df['등락률'] = df['등락률'].apply(lambda x : "+"+str(x) if x>0 else str(x))
+    df['시가총액'] = df['시가총액'].apply(lambda x : int(x/100000000))
+    df.rename(columns={'종목명':by,'현재가':'현재가(원)','등락률':'등락률(%)','시가총액':'시가총액(억원)'}, inplace=True)
 
     result = dash_table.DataTable(
         data=df.to_dict('records'),
@@ -153,26 +170,26 @@ def get_etf_table_by_market_cap(by):
         style_cell={'fontFamily': 'sans-serif', 'fontSize': '11px','padding':0},
         style_data={'border':'0px'},
         style_header={
-            'backgroundColor': 'white',
+            'backgroundColor': 'rgb(230, 230, 230)',
             'fontWeight': 'bold'
         },
         style_cell_conditional=[            
-            {'if': {'column_id': '종목명'},'textAlign': 'left','width': '200px'},
+            {'if': {'column_id': by},'textAlign': 'left','width': '200px'},
             {'if': {'column_id': '시가총액'},'width': '100px'},
             {'if': {'column_id': '등락률'},'width': '100px'}
         ],
         style_data_conditional=[
             {
                 'if': {
-                'filter_query': '{등락률} > 0',
-                'column_id': '등락률'
+                'filter_query': '{등락률(%)} contains +',
+                'column_id': '등락률(%)'
                 },
                 'color': 'Red'
             },
             {
                 'if': {
-                'filter_query': '{등락률} < 0',
-                'column_id': '등락률'
+                'filter_query': '{등락률(%)} contains -',
+                'column_id': '등락률(%)'
                 },
                 'color': 'Blue'
             },
@@ -181,6 +198,7 @@ def get_etf_table_by_market_cap(by):
 
     return result
 
+# HOME 미니맵 호출
 def get_mini_treemap():
 
     connection = pymysql.connect(
@@ -208,8 +226,8 @@ def get_mini_treemap():
         )
     return result
 
+# HOME pie차트 호출
 def get_etf_pie_chart():
-
     connection = pymysql.connect(
         host=HOSTNAME,
         user=USERNAME,
@@ -233,6 +251,7 @@ def get_etf_pie_chart():
     )
     
     return result
+
 
 def get_etf_single_chart(code):
     connection = pymysql.connect(

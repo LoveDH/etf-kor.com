@@ -22,8 +22,11 @@ home = [
             id='index-period',
             options=[
                 {'label': '1주일', 'value': 7},
-                {'label': '1달', 'value': 30},
+                {'label': '1개월', 'value': 30},
+                {'label': '3개월', 'value': 90},
+                {'label': '6개월', 'value': 180},
                 {'label': '1년', 'value': 365},
+                {'label': 'YTD', 'value': 'ytd'},
                 {'label': '5년', 'value': 1825}
             ],
             value=30,
@@ -62,18 +65,18 @@ home = [
         html.Table([
             html.Tr([
                 html.Td([
-                    gd.get_etf_table_by_market_cap('mc')
-                ]),
+                    gd.get_etf_table_by_market_cap('시가총액 TOP 10')
+                ],style={'width':'32%'}),
                 html.Td(style={'width':'2%'}),
                 html.Td([
-                    html.Tr([gd.get_etf_table_by_market_cap('yield_top')]),
-                    html.Tr([gd.get_etf_table_by_market_cap('yield_bottom')]),
-                ]),
+                    gd.get_etf_table_by_market_cap('등락률 TOP 10'),
+                    gd.get_etf_table_by_market_cap('등락률 BOTTOM 10'),
+                ],style={'width':'32%'}),
                 html.Td(style={'width':'2%'}),
                 html.Td([
                     html.Tr([gd.get_mini_treemap()]),
                     html.Tr([gd.get_etf_pie_chart()])
-                ],style={'width':'25%'}),
+                ],style={'width':'26%'}),
             ]),
             html.Tr([
                 html.Td(),
@@ -100,7 +103,7 @@ app.layout = html.Div([
     ],style={'width':'50%'}),
     dcc.Tabs(id='tabs',children=[
         dcc.Tab(label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='Maps', value='tab-2',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab(label='Trends', value='tab-2',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab(label='ETFs', value='tab-3',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab(label='Compare', value='tab-4',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab(label='Porfolio', value='tab-5',style=tab_style, selected_style=selected_tab_style),
@@ -111,7 +114,7 @@ app.layout = html.Div([
         dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
     ], colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
     html.Div(home,id='tabs-content-props')
-],style={'max-width':'1400px','margin':'0 auto'})
+],style={'max-width':'1300px','margin':'0 auto'})
 
 
 @app.callback(Output('symbols-search', 'options'),
@@ -120,13 +123,6 @@ def symbols_names_callback(value):
     options_list = [{'label': i,
                      'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
     return options_list
-
-# @app.callback(Output('tabs-content-props', 'children'),
-#             [Input('symbols-search', 'value')])
-# def go_etf_info(value):
-#     if not value:
-#         return gd.get_etf_single_chart()
-     
 
 @app.callback(Output('tabs-content-props', 'children'),
               [Input('tabs', 'value')])
