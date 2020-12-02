@@ -104,15 +104,12 @@ app.layout = html.Div([
     dcc.Tabs(id='tabs',children=[
         dcc.Tab(label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab(label='Trends', value='tab-2',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='ETFs', value='tab-3',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='Compare', value='tab-4',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='Porfolio', value='tab-5',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style),
-    ], colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
+        dcc.Tab(label='World', value='tab-3',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab(label='ETFs', value='tab-4',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab(label='Compare', value='tab-5',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab(label='Porfolio', value='tab-6',style=tab_style, selected_style=selected_tab_style),
+    ]+[dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style)]*6, # 탭 여백
+    colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
     html.Div(home,id='tabs-content-props')
 ],style={'max-width':'1300px','margin':'0 auto'})
 
@@ -130,7 +127,7 @@ def render_content(tab):
     if tab == 'tab-1':
         return home
     elif tab == 'tab-2':
-        return gd.get_map_data()
+        return  gd.get_tree_map()
     elif tab == 'tab-3':
         return html.Div([
             html.H3('Tab content 3')
@@ -140,6 +137,10 @@ def render_content(tab):
             html.H3('Tab content 4')
         ])
     elif tab == 'tab-5':
+        return html.Div([
+            html.H3('Tab content 4')
+        ])
+    elif tab == 'tab-6':
         return html.Div([
             html.H3('Tab content 4')
         ])

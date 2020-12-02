@@ -74,8 +74,8 @@ def get_indice_data(name,index_period=30):
     
     return fig
 
-# MAPS ETF 트리맵 호출
-def get_map_data():
+# Trends ETF 트리맵 호출
+def get_tree_map():
     connection = pymysql.connect(
         host=HOSTNAME,
         user=USERNAME,
@@ -89,13 +89,26 @@ def get_map_data():
 
     df = pd.DataFrame(cursor.fetchall(), columns=['종목명','등락률','시가총액','유형'])
     cursor.close()
-
-    fig = px.treemap(df, path=['유형','종목명'], values='시가총액',
+    df['유형2'] = df['유형'].apply(lambda x: x.split('-')[-1] if '-' in x else '')
+    df['유형1'] = df['유형'].apply(lambda x: x.split('-')[0])
+    print(df)
+    fig = px.treemap(df, path=['유형1','유형2','종목명'], values='시가총액',
                     color='등락률', hover_data=['종목명'],
                     color_continuous_scale='RdBu_r',
                     color_continuous_midpoint=0)
-    fig.update_layout({'margin':{"r":10,"t":0,"l":0,"b":10}})
+    fig.update_layout({'margin':{"r":0,"t":10,"l":0,"b":0}})
 
+    result_html = html.Div([
+        dcc.Graph(
+            id='etf-fluct-rate',
+            figure=fig
+        )
+    ])
+
+    return result_html
+
+# WORLD 지수 트렌드 호출
+def get_world_map():
     connection = pymysql.connect(
         host=HOSTNAME,
         user=USERNAME,
@@ -114,25 +127,19 @@ def get_map_data():
     df['등락률'] = df['등락률'].str[:-1].astype(float)
     df['pn'] = ['상승' if i > 0 else '하락' for i in df['등락률']]
     df['등락률'] = abs(df['등락률'])
-    fig2 = px.scatter_geo(df, locations="국가코드", color="pn",
+    fig = px.scatter_geo(df, locations="국가코드", color="pn",
                         hover_name="국가", size=df['등락률'],size_max=60,
                         hover_data=['지수명','현재가','전일대비'],
                         color_discrete_sequence=['red','blue'],
                         projection="robinson")
-    fig2.update_layout({'margin':{"r":10,"t":0,"l":0,"b":10}})
+    fig.update_layout({'margin':{"r":10,"t":0,"l":0,"b":10}})
+
     result_html = html.Div([
         dcc.Graph(
-            id='ETF유형별 등락률',
+            id='world-map',
             figure=fig
-        ),
-        dcc.Graph(
-            id='월드맵',
-            figure=fig2
         )
     ])
-
-    return result_html
-
 # HOME 데이터 테이블 호출
 def get_etf_table_by_market_cap(by):
 
@@ -160,7 +167,7 @@ def get_etf_table_by_market_cap(by):
     # 데이터 정리
     df['현재가'] = df['현재가'].apply(lambda x : "{:,}".format(int(x)))
     df['등락률'] = df['등락률'].apply(lambda x : "+"+str(x) if x>0 else str(x))
-    df['시가총액'] = df['시가총액'].apply(lambda x : int(x/100000000))
+    df['시가총액'] = df['시가총액'].apply(lambda x : "{:,}".format(int(x/100000000)))
     df.rename(columns={'종목명':by,'현재가':'현재가(원)','등락률':'등락률(%)','시가총액':'시가총액(억원)'}, inplace=True)
 
     result = dash_table.DataTable(
