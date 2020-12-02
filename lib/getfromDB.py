@@ -84,14 +84,11 @@ def get_tree_map():
         charset=CHARSET1)
 
     cursor = connection.cursor()
-    sql = "select Name, yield_from_ex, market_cap, type from etfkor.etfList"
+    sql = "select Name, yield_from_ex, market_cap, type1, type2 from etfkor.etfList"
     cursor.execute(sql)
 
-    df = pd.DataFrame(cursor.fetchall(), columns=['종목명','등락률','시가총액','유형'])
+    df = pd.DataFrame(cursor.fetchall(), columns=['종목명','등락률','시가총액','유형1','유형2'])
     cursor.close()
-    df['유형2'] = df['유형'].apply(lambda x: x.split('-')[-1] if '-' in x else '')
-    df['유형1'] = df['유형'].apply(lambda x: x.split('-')[0])
-    print(df)
     fig = px.treemap(df, path=['유형1','유형2','종목명'], values='시가총액',
                     color='등락률', hover_data=['종목명'],
                     color_continuous_scale='RdBu_r',
@@ -215,7 +212,7 @@ def get_mini_treemap():
         db=DATABASE,
         charset=CHARSET1)
     cursor = connection.cursor()
-    sql = "select Name, yield_from_ex, market_cap, type from etfkor.etfList"
+    sql = "select Name, yield_from_ex, market_cap, type1 from etfkor.etfList"
     cursor.execute(sql)
 
     df = pd.DataFrame(cursor.fetchall(), columns=['종목명','등락률','시가총액','유형'])

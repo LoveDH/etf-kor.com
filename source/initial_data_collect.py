@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import json
 
@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 import requests
 from bs4 import BeautifulSoup
 
-with open('../config.json', 'r') as f:
+with open('config.json', 'r') as f:
     config = json.load(f)
 
 HOSTNAME = config["MYSQL_INFO"]['HOSTNAME']
@@ -43,7 +43,12 @@ def get_etf_info(Symbol):
 
     # 상세정보
     base_index = base_sub_info[0].text # 기초지수
-    etype = base_sub_info[1].text.replace(', ','-') #유형
+    etype = base_sub_info[1].text.split(', ') #유형
+    type1 = etype[0]
+    if len(etype)==2:
+        type2 = etype[1]
+    else:
+        type2 = '일반'
     listed_day = base_info.find_all('td')[-1].text #상장일
     commission = float(bs_obj.find("table",{"summary":"펀드보수 정보"}).find('em').text[:-1]) # 수수료
 
@@ -53,13 +58,14 @@ def get_etf_info(Symbol):
     # 전일대비 상승률
     yield_from_ex = round((now_price - ex_price) / ex_price * 100, 2)
 
-    print(now_price, ex_price, yield_from_ex, market_cap, listed_shares, commission, base_index, etype, listed_day)
-    return now_price, ex_price, yield_from_ex, market_cap, listed_shares, commission, base_index, etype, listed_day
+    print(now_price, ex_price, yield_from_ex, market_cap, listed_shares, commission, base_index, type1, type2, listed_day)
+    return now_price, ex_price, yield_from_ex, market_cap, listed_shares, commission, base_index, type1, type2, listed_day
 
 def get_stock_prices(Symbol):
     try:
-        print(Symbol, end=' ')
-        stock_df = stock.get_etf_ohlcv_by_date(config['LAST_UPDATE'], today, Symbol)
+        print(Symbol)
+        start = datetime.strftime(datetime.strptime(config['LAST_UPDATE'],'%Y%m%d') + timedelta(days=1), '%Y%m%d')
+        stock_df = stock.get_etf_ohlcv_by_date(start, today, Symbol)
         stock_df.to_sql(name=Symbol, con=conn, if_exists='append', index=True)
     except:
         print(Symbol+':데이터 불러오기 실패', end= ' ')
@@ -86,7 +92,7 @@ if __name__=='__main__':
     etf_info = fdr.EtfListing('KR')
     etf_info = pd.DataFrame(etf_info, columns=['Symbol','Name','now_price','ex_price',
                                                 'yield_from_ex','market_cap','listed_shares',
-                                                'commission','base_index','type','listed_day'])
+                                                'commission','base_index','type1','type2','listed_day'])
 
     # etf 정보 dataframe
     print('...ETF 정보 수집중')
