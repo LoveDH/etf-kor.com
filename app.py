@@ -2,17 +2,15 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 
 import lib.getfromDB as gd
 
-#external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
 app = dash.Dash(__name__)
-#, external_stylesheets=external_stylesheets)
 
 tab_style = {'color': 'white','padding':'6px'}
 selected_tab_style = {'padding':'6px','color': 'white','backgroundColor': '#2e2e2e'}
@@ -93,14 +91,19 @@ app.layout = html.Div([
                     html.Img(src='assets/logo.png',height=60)
                 ],href='/')
             ),
-            html.Tr(
-                dcc.Dropdown(id='symbols-search',
-                    multi=False,
-                    placeholder="ETF 종목명을 입력하세요.",
-                    value='',
-                    style={'height': '30px','min_width':'200px','fontSize': 15,'textAlign': 'left'})
-                )
-    ],style={'width':'50%'}),
+            html.Tr([
+                html.Td([
+                    dcc.Dropdown(id='symbols-search',
+                        multi=False,
+                        placeholder="ETF 종목명을 입력하세요.",
+                        value='',
+                        style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+                ]),
+                html.Td([
+                    html.Button('search', id='search-button', n_clicks=0)
+                ])
+            ])
+    ],style={'width':'40%'}),
     dcc.Tabs(id='tabs',children=[
         dcc.Tab(label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab(label='Trends', value='tab-2',style=tab_style, selected_style=selected_tab_style),
@@ -110,7 +113,7 @@ app.layout = html.Div([
         dcc.Tab(label='Porfolio', value='tab-6',style=tab_style, selected_style=selected_tab_style),
     ]+[dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style)]*6, # 탭 여백
     colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
-    html.Div(home,id='tabs-content-props')
+    html.Div(home,id='tabs-content-props',style={'width':'100%'})
 ],style={'max-width':'1300px','margin':'0 auto'})
 
 
@@ -127,14 +130,30 @@ def render_content(tab):
     if tab == 'tab-1':
         return home
     elif tab == 'tab-2':
-        return  gd.get_tree_map()
+        return  html.Div([
+            gd.get_tree_map()
+        ])
     elif tab == 'tab-3':
         return html.Div([
-            html.H3('Tab content 3')
+            gd.get_world_map()
         ])
     elif tab == 'tab-4':
         return html.Div([
-            html.H3('Tab content 4')
+            dcc.RadioItems(
+                id='stock-period',
+                options=[
+                    {'label': '1주일', 'value': 7},
+                    {'label': '1개월', 'value': 30},
+                    {'label': '3개월', 'value': 90},
+                    {'label': '6개월', 'value': 180},
+                    {'label': '1년', 'value': 365},
+                    {'label': 'YTD', 'value': 'ytd'},
+                    {'label': '5년', 'value': 1825}
+                ],
+                value=30,
+                labelStyle={'display': 'inline-block'},style={'padding':'10px'}
+            ),
+            html.Div([gd.get_stock_chart('069500')],id='stock-chart')
         ])
     elif tab == 'tab-5':
         return html.Div([
@@ -152,6 +171,18 @@ def render_content(tab):
 [Input('index-period', 'value')])
 def update_figure(selected_period):
     return gd.get_indice_data('KS11',selected_period),gd.get_indice_data('KQ11',selected_period),gd.get_indice_data('US500',selected_period)
+
+# @app.callback(
+#     Output('tabs-content-props', 'children'),
+#     [Input('search-button','n_clicks')],
+#     State('symbols-search','value'))
+# def show_stock_chart(n_click, selected_symbol):
+
+#     if n_click > 0:
+#         return 'tab-4'
+#     else:
+#         return 'tab-1'
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)
