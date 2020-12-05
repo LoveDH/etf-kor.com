@@ -80,33 +80,33 @@ def get_tree_map():
     fig.update_layout({'margin':{"r":0,"t":20,"l":0,"b":0},'height':600})
     fig.update_traces(textfont={'family':'sans-serif','size':15},textposition='middle center', selector=dict(type='treemap'))
 
-    result_html = html.Div([
-        dcc.Graph(
-            id='etf-fluct-rate',
-            figure=fig
-        )
-    ])
-
-    return result_html
+    return fig
 
 # WORLD 지수 트렌드 호출
 def get_world_map():
-    sql = "SELECT * FROM etfkor.indices"
-    rep_code = ['^GSPC','^FTSE','^GDAXI','^FCHI','IMOEX.ME','^N225','^HSI','000001.SS','^STI','^AXJO','^BSESN','^JKSE','^KLSE','^NZ50','^KS11','^GSPTSE','^BVSP',
-    '^MXX','^IPSA','^MERV','^TA125.TA','^CASE30']
+    
+    sql = """SELECT * FROM etfkor.indices WHERE Symbol in ('^GSPC','^FTSE','^GDAXI','^FCHI','IMOEX.ME','^N225','^HSI','000001.SS','^STI','^AXJO','^BSESN','^JKSE','^KLSE','^NZ50','^KS11','^GSPTSE','^BVSP',
+    '^MXX','^IPSA','^MERV','^TA125.TA','^CASE30')"""
+
     df = pd.DataFrame(get_data_from_db(sql), columns=['코드','지수명','국가','국가코드','현재가','전일대비','등락률'])
 
-    df_to_plot = df.loc[df['코드'].isin(rep_code)]
-    df_to_plot['등락률'] = df_to_plot['등락률'].str[:-1].astype(float)
-    df_to_plot['pn'] = ['상승' if i > 0 else '하락' for i in df_to_plot['등락률']]
-    df_to_plot['등락률'] = abs(df_to_plot['등락률'])
+    df['등락률'] = df['등락률'].str[:-1].astype(float)
+    df['pn'] = ['상승' if i > 0 else '하락' for i in df['등락률']]
+    df['등락률'] = abs(df['등락률'])
 
-    fig = px.scatter_geo(df_to_plot, locations="국가코드", color="pn",
-                        hover_name="국가", size=df_to_plot['등락률'],size_max=60,
+    fig = px.scatter_geo(df, locations="국가코드", color="pn",
+                        hover_name="국가", size=df['등락률'],size_max=60,
                         hover_data=['지수명','현재가','전일대비'],
                         color_discrete_sequence=['red','blue'],
                         projection="robinson")
     fig.update_layout({'margin':{"r":10,"t":0,"l":0,"b":10},'height':600})
+
+    return fig
+
+def get_world_table():
+
+    sql = "SELECT * FROM etfkor.indices"
+    df = pd.DataFrame(get_data_from_db(sql), columns=['코드','지수명','국가','국가코드','현재가','전일대비','등락률'])
 
     df['현재가'] = df['현재가'].apply(lambda x : "{:,}".format(int(x)))
     df.rename(columns={'현재가':'현재가(달러)','등락률':'등락률(%)'}, inplace=True)
@@ -150,14 +150,8 @@ def get_world_map():
                             'color': 'Blue'
                         },
                     ]
-    result = html.Div([
-        dcc.Graph(
-            id='world-map',
-            figure=fig
-        ),
-        html.Div([
-            html.Td([
-                dash_table.DataTable(
+    
+    table_left = dash_table.DataTable(
                     data=df[:int(len(df)/2)].to_dict('records'),
                     columns=[{'id': c, 'name': c} for c in df.columns],
                     style_as_list_view=True,
@@ -169,11 +163,9 @@ def get_world_map():
                     },
                     style_cell_conditional=custom_cell_conditional,
                     style_data_conditional=custom_data_conditional
-                ),
-            ],style={'width':'49%'}),
-            html.Td(style={'width':'2%'}),
-            html.Td([
-                dash_table.DataTable(
+                )
+
+    table_right =  dash_table.DataTable(
                     data=df[int(len(df)/2):].to_dict('records'),
                     columns=[{'id': c, 'name': c} for c in df.columns],
                     style_as_list_view=True,
@@ -186,11 +178,8 @@ def get_world_map():
                     style_cell_conditional=custom_cell_conditional,
                     style_data_conditional=custom_data_conditional
                 )  
-            ],style={'width':'49%'})
-        ])
-    ])
 
-    return result
+    return table_left, table_right
 
 # HOME 데이터 테이블 호출
 def get_etf_table_by_market_cap(by):
