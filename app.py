@@ -62,46 +62,13 @@ def symbols_names_callback(value):
 def update_figure(selected_period):
     return gd.get_indice_data('KS11',selected_period),gd.get_indice_data('KQ11',selected_period),gd.get_indice_data('US500',selected_period)
 
+@app.callback(Output('tabs-content-props','children'),
+Input('search-button','n_clicks'),State('symbols-search','value'))
+def show_etf_chart(n_clicks, value):
+    if n_clicks>0:
+        return g
+
+
 if __name__ == "__main__":
     app.run_server(debug=True)
 
-
-# @app.callback(Output('tabs-content-props', 'children'),
-#               [Input('tabs', 'value')])
-# def render_content(tab):
-#     if tab == 'tab-1':
-#         return pg.home
-#     elif tab == 'tab-2':
-#         return  pg.trends
-#     elif tab == 'tab-3':
-#         return html.Div([
-#             gd.get_world_map()
-#         ])
-#     elif tab == 'tab-4':
-#         return html.Div([
-#             dcc.RadioItems(
-#                 id='stock-period',
-#                 options=[
-#                     {'label': '1주일', 'value': 7},
-#                     {'label': '1개월', 'value': 30},
-#                     {'label': '3개월', 'value': 90},
-#                     {'label': '6개월', 'value': 180},
-#                     {'label': '1년', 'value': 365},
-#                     {'label': 'YTD', 'value': 'ytd'},
-#                     {'label': '5년', 'value': 1825}
-#                 ],
-#                 value=30,
-#                 labelStyle={'display': 'inline-block'},style={'padding':'10px'}
-#             ),
-#             html.Div([gd.get_stock_chart('069500')],id='stock-chart')
-#         ])
-#     elif tab == 'tab-5':
-#         return html.Div([
-#             html.H3('Tab content 4')
-#         ])
-#     elif tab == 'tab-6':
-#         return html.Div([
-#             html.H3('Tab content 4')
-#         ])
-#     else:
-#         return None

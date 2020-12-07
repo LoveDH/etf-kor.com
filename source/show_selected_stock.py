@@ -141,7 +141,7 @@ class StocksSelectedError(Exception):
               [Input('update-button1', 'n_clicks')],
                 State('symbols-dropdown1', 'value'))
 def graph_callback(n_clicks, selected_symbols):
-    empty_layout = dict(data=[], layout=go.Layout(title=f' closing prices',
+    empty_layout = dict(data=[], layout=go.Layout(title=' closing prices',
                                                 xaxis={'title': 'Date'},
                                                 yaxis={'title': 'Closing Price'},
                                                 font={'family': 'verdana', 'size': 15, 'color': '#606060'}))
@@ -194,7 +194,7 @@ def graph_callback(n_clicks, selected_symbols):
               [Input('update-button2', 'n_clicks')],
                 State('symbols-dropdown2', 'value'))
 def graph_callback(n_clicks, selected_types):
-    empty_layout = dict(data=[], layout=go.Layout(title=f' Yield from yesterday',
+    empty_layout = dict(data=[], layout=go.Layout(title=' Yield from yesterday',
                                                 xaxis={'title': 'Ticker'},
                                                 yaxis={'title': 'Yield'},
                                                 font={'family': 'verdana', 'size': 15, 'color': '#606060'}))

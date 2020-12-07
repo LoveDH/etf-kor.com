@@ -2,6 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import lib.getfromDB as gd
 
+# 홈 화면
 home =  html.Div([
         dcc.RadioItems(
             id='index-period',
@@ -71,6 +72,7 @@ home =  html.Div([
         ])
     ])
 
+# 트렌드
 trends = html.Div([
             dcc.Graph(
                 id='etf-fluct-rate',
@@ -78,6 +80,7 @@ trends = html.Div([
             )
         ])
 
+# 세계 지수
 world_indice_table_l, world_indice_table_r = gd.get_world_table()
 world = html.Div([
             dcc.Graph(
@@ -91,6 +94,7 @@ world = html.Div([
             ])
         ])
 
+# etf 종목 정보
 etfs = html.Div([
             dcc.RadioItems(
                 id='stock-period',
