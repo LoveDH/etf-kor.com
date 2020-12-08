@@ -71,13 +71,13 @@ def get_indice_data(name,index_period=30):
 # Trends ETF 트리맵 호출
 def get_tree_map():
 
-    sql = "select Name, yield_from_ex, market_cap, type1, type2 from etfkor.etfList"
-    df = pd.DataFrame(get_data_from_db(sql), columns=['종목명','등락률','시가총액','유형1','유형2'])
+    sql = "select Name, yield_from_ex, market_cap, type1, type2, listed_day from etfkor.etfList"
+    df = pd.DataFrame(get_data_from_db(sql), columns=['종목명','등락률','시가총액','유형1','유형2','상장일'])
     fig = px.treemap(df, path=['유형1','유형2','종목명'], values='시가총액',
-                    color='등락률', hover_data=['종목명'],
+                    color='등락률', hover_data=['종목명','상장일'],
                     color_continuous_scale='RdBu_r',
                     color_continuous_midpoint=0)
-    fig.update_layout({'margin':{"r":0,"t":20,"l":0,"b":0},'height':600})
+    fig.update_layout({'margin':{"r":0,"t":10,"l":0,"b":0},'height':600})
     fig.update_traces(textfont={'family':'sans-serif','size':15},textposition='middle center', selector=dict(type='treemap'))
 
     return fig
@@ -270,7 +270,6 @@ def get_etf_pie_chart():
             id='ETF 시장 비율',
             figure=fig
     )
-    
     return result
 
 

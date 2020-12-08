@@ -17,34 +17,21 @@ tab_style = {'color': 'white','padding':'6px'}
 selected_tab_style = {'padding':'6px','color': 'white','backgroundColor': '#2e2e2e'}
 
 app.layout = html.Div([
-    html.Table([
-            html.Tr(
-                html.A([
-                    html.Img(src='assets/logo.png',height=60)
-                ],href='/')
-            ),
-            html.Tr([
-                html.Td([
-                    dcc.Dropdown(id='symbols-search',
-                        multi=False,
-                        placeholder="ETF 종목명을 입력하세요.",
-                        value='',
-                        style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
-                ]),
-                html.Td([
-                    html.Button('search', id='search-button', n_clicks=0)
-                ])
-            ])
-    ],style={'width':'40%'}),
+    html.Div([
+        html.A([
+            html.Img(src='assets/logo.png',height=60)
+        ],href='/')
+    ]),
     dcc.Tabs(id='tabs',children=[
         dcc.Tab([pg.home],label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.trends],label='Trends', value='tab-2',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.world],label='World', value='tab-3',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.etfs],label='ETFs', value='tab-4',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='Compare', value='tab-5',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab(label='Porfolio', value='tab-6',style=tab_style, selected_style=selected_tab_style),
-    ]+[dcc.Tab(value='blank',style=tab_style, selected_style=selected_tab_style)]*6, # 탭 여백
-    colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
+        dcc.Tab([pg.search],label='Search', value='tab-2',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab([pg.trends],label='Trends', value='tab-3',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab([pg.world],label='World', value='tab-4',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab([pg.screener],label='Screener', value='tab-5',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab([pg.compare],label='Compare', value='tab-6',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab([pg.portfolio],label='Porfolio', value='tab-7',style=tab_style, selected_style=selected_tab_style),
+    ]+[dcc.Tab(value='blank',style=tab_style, selected_style=tab_style)]*6, # 탭 여백
+    loading_state={'is_loding':True},colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
     html.Div(id='tabs-content-props',style={'width':'100%'})
 ],style={'max-width':'1300px','margin':'0 auto'})
 
@@ -64,9 +51,18 @@ def update_figure(selected_period):
 
 @app.callback(Output('tabs-content-props','children'),
 Input('search-button','n_clicks'),State('symbols-search','value'))
-def show_etf_chart(n_clicks, value):
+def show_etf_chart(n_clicks, symbol):
     if n_clicks>0:
-        return g
+        return gd.get_stock_chart(symbol)
+    else:
+        return None
+
+# @app.callback(
+#     Output('days-text', 'children'),
+#     [Input('trends-slider', 'value')])
+# def update_output(value):
+#     return 'You have selected "{}"'.format(value)
+
 
 
 if __name__ == "__main__":
