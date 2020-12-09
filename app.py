@@ -57,11 +57,16 @@ def show_etf_chart(n_clicks, symbol):
     else:
         return None
 
-# @app.callback(
-#     Output('days-text', 'children'),
-#     [Input('trends-slider', 'value')])
-# def update_output(value):
-#     return 'You have selected "{}"'.format(value)
+@app.callback(
+    Output('days-text', 'children'),
+    [Input('trends-slider', 'value')])
+def update_output(days):
+    if days==365:
+        return '1년'
+    else:
+        month = days//31
+        days %= 365
+        return 'You have selected "{}"'.format(value)
 
 
 
