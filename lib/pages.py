@@ -8,9 +8,9 @@ home =  html.Div([
         id='index-period',
         options=[
             {'label': '1주일', 'value': 7},
-            {'label': '1개월', 'value': 30},
-            {'label': '3개월', 'value': 90},
-            {'label': '6개월', 'value': 180},
+            {'label': '1개월', 'value': 31},
+            {'label': '3개월', 'value': 92},
+            {'label': '6개월', 'value': 183},
             {'label': '1년', 'value': 365},
             {'label': 'YTD', 'value': 'ytd'},
             {'label': '5년', 'value': 1825}
@@ -103,9 +103,9 @@ trends = html.Div([
                 value=1,
                 marks={
                     1:'1일',
-                    30:'1개월',
-                    90:'3개월',
-                    180:'6개월',
+                    31:'1개월',
+                    92:'3개월',
+                    183:'6개월',
                     365:'1년'
                 }
             ),
@@ -117,12 +117,6 @@ trends = html.Div([
         figure=gd.get_tree_map()
     )
 ])
-
-@app.callback(
-    Output('slider-output-container', 'children'),
-    [Input('my-slider', 'value')])
-def update_output(value):
-    return 'You have selected "{}"'.format(value)
 
 # 세계 지수
 world_indice_table_l, world_indice_table_r = gd.get_world_table()
