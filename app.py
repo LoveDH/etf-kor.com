@@ -24,7 +24,7 @@ app.layout = html.Div([
     ]),
     dcc.Tabs(id='tabs',children=[
         dcc.Tab([pg.home],label='Home', value='tab-1',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.search],label='Search', value='tab-2',style=tab_style, selected_style=selected_tab_style),
+        dcc.Tab(children=[pg.search],label='Search', value='tab-2',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.trends],label='Trends', value='tab-3',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.world],label='World', value='tab-4',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.screener],label='Screener', value='tab-5',style=tab_style, selected_style=selected_tab_style),
@@ -32,7 +32,6 @@ app.layout = html.Div([
         dcc.Tab([pg.portfolio],label='Porfolio', value='tab-7',style=tab_style, selected_style=selected_tab_style),
     ]+[dcc.Tab(value='blank',style=tab_style, selected_style=tab_style)]*6, # 탭 여백
     loading_state={'is_loding':True},colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
-    html.Div(id='tabs-content-props',style={'width':'100%'})
 ],style={'max-width':'1300px','margin':'0 auto'})
 
 
@@ -49,26 +48,16 @@ def symbols_names_callback(value):
 def update_figure(selected_period):
     return gd.get_indice_data('KS11',selected_period),gd.get_indice_data('KQ11',selected_period),gd.get_indice_data('US500',selected_period)
 
-@app.callback(Output('tabs-content-props','children'),
+@app.callback([Output('etf-name','children'),Output('etf-chart','children')],
 Input('search-button','n_clicks'),State('symbols-search','value'))
 def show_etf_chart(n_clicks, symbol):
+    if symbol=='':
+        return (None,None)
+    name, chart = gd.get_stock_chart(symbol)
     if n_clicks>0:
-        return gd.get_stock_chart(symbol)
+        return name, chart
     else:
-        return None
-
-@app.callback(
-    Output('days-text', 'children'),
-    [Input('trends-slider', 'value')])
-def update_output(days):
-    if days==365:
-        return '1년'
-    else:
-        month = days//31
-        days %= 365
-        return 'You have selected "{}"'.format(value)
-
-
+        return (None,None)
 
 if __name__ == "__main__":
     app.run_server(debug=True)

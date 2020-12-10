@@ -64,11 +64,6 @@ home =  html.Div([
                 html.Tr([gd.get_etf_pie_chart()])
             ],style={'width':'26%'}),
         ]),
-        html.Tr([
-            html.Td(),
-            html.Td(),
-            html.Td(),
-        ]),
     ])
 ])
 
@@ -88,30 +83,36 @@ search = html.Div([
             ])
         ])
     ],style={'width':700}),
-    html.Div(id='etf-info')
+    html.Div(id='etf-info',children=[
+        html.H1(id='etf-name'),
+        html.Table([
+            html.Td(id='etf-chart'),
+            html.Td([
+            
+            ])
+        ])
+    ])
 ])
 
 # 트렌드
 trends = html.Div([
-    html.Table([
-        html.Td([
-            dcc.Slider(
-                id='trends-slider',
-                min=1,
-                max=365,
-                step=1,
-                value=1,
-                marks={
-                    1:'1일',
-                    31:'1개월',
-                    92:'3개월',
-                    183:'6개월',
-                    365:'1년'
-                }
-            ),
-        ]),
-        html.Td(id='days-text')
-    ],style={'width':600,'padding':'10px'}),
+    html.Div([
+        dcc.Slider(
+            id='trends-slider',
+            min=1,
+            max=400,
+            step=None,
+            value=1,
+            marks={
+                1:'1일',
+                31:'1개월',
+                92:'3개월',
+                183:'6개월',
+                275:'9개월',
+                365:'12개월'
+            }
+        )
+    ],style={'width':550,'padding':'5px'}),
     dcc.Graph(
         id='etf-fluct-rate',
         figure=gd.get_tree_map()

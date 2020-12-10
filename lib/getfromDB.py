@@ -297,20 +297,7 @@ def get_stock_chart(symbol):
     fig = go.Figure(data=[go.Scatter(x=df['날짜'],
                 y=df['종가'])],
                 layout={'height':200,'width':370,'margin':{"r":0,"t":0,"l":0,"b":0}})
-    result = html.Div([
-        html.H1(info['종목명'][0]),
-        html.Table([
-            html.Td([
-                dcc.Graph(
-                    figure = fig
-                )
-            ]),
-            html.Td([
-                
-            ])
-        ])
-
-
-    ])
-
-    return result
+    chart = dcc.Graph(
+        figure=fig
+    )
+    return info['종목명'][0], chart
