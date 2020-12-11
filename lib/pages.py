@@ -51,8 +51,7 @@ home =  html.Div([
     html.Table([
         html.Tr([
             html.Td([
-                gd.get_etf_table_by_market_cap('시가총액 TOP 10'),
-                gd.get_etf_table_by_market_cap('거래량 TOP 10')
+                gd.get_etf_table_by_market_cap('시가총액 TOP 20')
             ],style={'width':'32%'}),
             html.Td(style={'width':'2%'}),
             html.Td([
@@ -70,20 +69,24 @@ home =  html.Div([
 
 # 검색
 search = html.Div([
-    html.Table([
-        html.Tr([
-            html.Td([
-                dcc.Dropdown(id='symbols-search',
-                    multi=False,
-                    placeholder="ETF 종목명을 입력하세요.",
-                    value='',
-                    style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
-            ]),
-            html.Td([
-                html.Button('search', id='search-button', n_clicks=0)
-            ])
-        ])
-    ],style={'width':700}),
+    html.Div([
+        html.Table([
+            html.Tr([
+                html.Td(style={'width':'5%'}),
+                html.Td([
+                    dcc.Dropdown(id='symbols-search',
+                        multi=False,
+                        placeholder="ETF 종목명을 입력하세요.",
+                        value='',
+                        style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+                ]),
+                html.Td([
+                    html.Button('search', id='search-button', n_clicks=0)
+                ],style={'width':'10%'}),
+                html.Td(style={'width':'5%'})
+            ],style={'width':'50%'})
+        ],style={'width':'100%', 'padding-left':'25%', 'padding-right':'25%'}),
+    ],style={'width':'100%'}),
     html.Div([
         dcc.Slider(
             id='range-slider',
@@ -101,11 +104,10 @@ search = html.Div([
                 400:'전체'
             }
         )
-    ],style={'width':600,'padding':'5px'}),
+    ],style={'width':'50%','padding':5, 'padding-left':'25%', 'padding-right':'25%'}),
     html.Div(id='etf-info',children=[
-        html.Table([
-            html.Td(style={'width':200}),
-            html.H1(id='etf-name')
+        html.Div([
+            html.H1(id='etf-name',style={'text-align':'center'})
         ]),
         html.Table([
             html.Td(style={'width':'10%'}),
@@ -122,7 +124,8 @@ search = html.Div([
             html.Td(id='portfolio-piechart',style={}),
             html.Td(style={'width':'15%'}),
         ],style={'width':'100%'}),
-    ])
+        html.Div(id='etf-history',style={'width':'70%', 'padding-left':'15%', 'padding-right':'15%'})
+    ],style={'width':'100%'})
 ])
 
 # 트렌드
@@ -144,7 +147,7 @@ world = html.Div([
         html.Td([world_indice_table_l],style={'width':'49%'}),
         html.Td(style={'width':'2%'}),
         html.Td([world_indice_table_r],style={'width':'49%'})
-    ])
+    ],style={'width':'100%'})
 ])
 
 screener = None
@@ -188,22 +191,21 @@ compare = html.Div([
             value=30,
             labelStyle={'display': 'inline-block'},style={'padding':'10px','textalign':'center'}
         ),
-    ],style={'textalign':'center'}),
+    ],style={'width':'100%','text-align':'center'}),
+
     html.Div([
-        html.Div([
-            html.Td(style={'width':'20%'}),
-            html.Td(id='compare-chart',style={'width':900,'height':400}),
-            html.Td(style={'width':'20%'}),
-        ],style={'width':'100%'})
-    ],style={'textalign':'center'}),
+        html.Div(id='compare-chart',style={'width':'100%','height':400}),
+    ],style={'width':'80%','padding-left':'15%', 'padding-right':'5%'}),
+
     html.Div([
         html.Table([
             html.Td(style={'width':'20%'}),
-            html.Td(id='compare-table1'),
-            html.Td(style={'width':'5%'}),
-            html.Td(id='compare-table2'),
+            html.Td(id='compare-table'),
             html.Td(style={'width':'20%'}),
         ],style={'width':'100%','textalign':'center'})
-    ],style={'width':'100%','textAlign': 'center'})
-],style={'width':'100%','textAlign': 'center'})
-portfolio = None
+    ],style={'width':'100%'})
+],style={'width':'100%'})
+
+portfolio = html.Div([
+    
+])

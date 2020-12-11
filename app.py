@@ -85,6 +85,17 @@ def show_etf_chart(n_clicks, symbol):
     else:
         return (None,None)
 
+@app.callback(Output('etf-history','children'),
+Input('search-button','n_clicks'),[State('symbols-search','value')])
+def show_etf_chart(n_clicks, symbol):
+    if symbol=='':
+        return None
+    table = gd.get_history_table(symbol)
+    if n_clicks>0:
+        return table
+    else:
+        return None
+
 @app.callback(Output('compare-chart','children'),
 [Input('compare-button','n_clicks'),Input('compare-period','value')],[State('compare 1','value'),State('compare 2','value')])
 def show_compare_chart(n_clicks, period, symbol1, symbol2):
@@ -96,16 +107,16 @@ def show_compare_chart(n_clicks, period, symbol1, symbol2):
     else:
         return None
 
-@app.callback([Output('compare-table1','children'),Output('compare-table2','children')],
+@app.callback(Output('compare-table','children'),
 Input('compare-button','n_clicks'),[State('compare 1','value'),State('compare 2','value')])
 def show_compare_table(n_clicks, symbol1, symbol2):
-    if symbol1=='' or symbol1=='':
-        return (None,None)
-    table1, table2 = gd.get_compare_table(symbol1), gd.get_compare_table(symbol2)
+    if symbol1=='' or symbol2=='':
+        return None
+    compare_table = gd.get_compare_table(symbol1,symbol2)
     if n_clicks>0:
-        return table1, table2
+        return compare_table
     else:
-        return (None,None)
+        return None
 
 if __name__ == "__main__":
     app.run_server(debug=True)

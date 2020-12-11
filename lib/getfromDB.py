@@ -188,9 +188,9 @@ def get_etf_table_by_market_cap(by):
     sql = "select Name, now_price, yield_from_ex, market_cap from etfkor.etfList"
     df = pd.DataFrame(get_data_from_db(sql), columns=['종목명','현재가','등락률','시가총액'])
 
-    if by == '시가총액 TOP 10':
+    if by == '시가총액 TOP 20':
         df.sort_values(by='시가총액', ascending=False, inplace=True)
-        df = df.head(10)
+        df = df.head(20)
     elif by == '등락률 TOP 10':
         df.sort_values(by='등락률', ascending=False, inplace=True)
         df = df.head(10)
@@ -341,6 +341,7 @@ def get_etf_chart(symbol, period):
     )
     return name, chart, info_table
 
+# Search etf 포트폴리오 구성 파이 차트 호출
 def get_etf_pie_chart(symbol):
     sql = "select 종목, 계약수, 금액, 비중 from etfkor."+symbol+'_pf'
 
@@ -370,48 +371,55 @@ def get_etf_pie_chart(symbol):
     )
     return pf_table, result
 
+# Compare 수익률 비교 차트
 def get_compare_chart(period, symbol1,symbol2):
-
+    name1 = list(etflist.loc[etflist['Symbol']==symbol1,'Name'])[0]
+    name2 = list(etflist.loc[etflist['Symbol']==symbol2,'Name'])[0]
+    
     sql = "select 날짜, 종가 from etfkor."+symbol1
-    df1 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','종가'])
-
+    try:
+        df1 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜',name1])
+    except:
+        df1 = pd.DataFrame(get_data_from_db(sql),columns=['날짜',name1])
+    
     sql = "select 날짜, 종가 from etfkor."+symbol2
-    df2 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','종가'])
+    try:
+        df2 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜',name2])
+    except:
+        df2 = pd.DataFrame(get_data_from_db(sql),columns=['날짜',name2])
 
-    df1['1번'] = df1['종가']
-    df1['2번'] = df2['종가']
-    del df1['종가']
-    df1.set_index('날짜',drop=True,inplace=True)
-    df1 = df1.T
-
-    for date in df1.columns[::-1]:
-        df1[date] = round(df1[date] / df1[df1.columns[0]], 3)
-    df1 = (df1.T - 1)*100
-
-    fig = px.line(df1, x=df1.index, y=['1번','2번'])
+    merged_df = pd.merge(left=df1, right=df2, how='outer', on='날짜')
+    merged_df.set_index('날짜',drop=True,inplace=True)
+    merged_df.fillna(method='bfill',inplace=True)
+    merged_df = merged_df.T
+    for date in merged_df.columns[::-1]:
+        merged_df[date] = round(merged_df[date] / merged_df[merged_df.columns[0]], 3)
+    merged_df = (merged_df.T - 1)*100
+    fig = px.line(merged_df, x=merged_df.index, y=[name1,name2])
+    fig.update_layout({'margin':{"r":0,"t":0,"l":0,"b":80}})
     result = dcc.Graph(
             id='수익률 비교차트',
             figure=fig
     )
     return result
 
-def get_compare_table(symbol):
+# Compare 비교 테이블 생성
+def get_compare_table(symbol1,symbol2):
     
-    # 테이블
-    sql = "select * from etfkor.etfList WHERE Symbol = "+symbol
-    info_table = pd.DataFrame(get_data_from_db(sql),columns=['코드','종목명','현재가','전일종가','등락률','시가총액','상장주식수','수수료','기초지수','대분류','소분류','상장일'])
-    name = info_table['종목명'][0]
-    info_table['현재가'] = info_table['현재가'].apply(lambda x : "{:,}".format(int(x)))
-    info_table['전일종가'] = info_table['전일종가'].apply(lambda x : "{:,}".format(int(x)))
-    info_table['상장주식수'] = info_table['상장주식수'].apply(lambda x : "{:,}".format(int(x)))
+    sql = "select * from etfkor.etfList WHERE Symbol IN ("+symbol1+','+symbol2+')'
+    info_table = pd.DataFrame(get_data_from_db(sql),columns=['코드','종목명','현재가','전일종가','등락률','시가총액(억원)','상장주식수','수수료','기초지수','대분류','소분류','상장일'])
+    for col in ['현재가','전일종가','상장주식수']:
+        info_table[col] = info_table[col].apply(lambda x : "{:,}".format(int(x)))
     info_table['등락률'] = info_table['등락률'].apply(lambda x : "+"+str(x)+'%' if x>0 else str(x)+'%')
     info_table['수수료'] = info_table['수수료'].apply(lambda x : str(x)+'%' if x>0 else str(x))
-    info_table['시가총액'] = info_table['시가총액'].apply(lambda x : "{:,}".format(int(x/100000000))+'(억원)')
-    
+    info_table['시가총액(억원)'] = info_table['시가총액(억원)'].apply(lambda x : "{:,}".format(int(x/100000000)))
+    name1, name2 = info_table['종목명'][0], info_table['종목명'][1]
+    info_table.set_index('종목명',drop=True,inplace=True)
     info_table = info_table.T
-    info_table.rename(columns={0: "value"},inplace=True)
     info_table.reset_index(inplace=True)
-
+    
+    info_table = info_table[[name1,'index',name2]]
+    info_table.rename(columns={'index':'종목명'},inplace=True)
     info_table = dash_table.DataTable(
         data=info_table.to_dict('records'),
         columns=[{'id': c, 'name': c} for c in info_table.columns],
@@ -419,26 +427,57 @@ def get_compare_table(symbol):
         style_cell={'fontFamily': 'sans-serif', 'fontSize': 15,'padding':0},
         style_data={'border':'0px'},
         style_header={
-            'display': 'none'
+            'fontSize':15
         },
         style_cell_conditional=[            
-            {'if': {'column_id': 'index'},'textAlign': 'left','width': '100px','fontWeight': 'bold'},
+            {'if': {'column_id': '종목명'},'textAlign': 'center','width': '30%','fontWeight': 'bold'},
+            {'if': {'column_id': name1},'textAlign': 'right','width': '35%'},
+            {'if': {'column_id': name2},'textAlign': 'left','width': '35%'},
+        ],
+    )
+    return info_table
+
+#Search etf history
+def get_history_table(symbol):
+    sql = "select 날짜, NAV, 시가, 고가, 저가, 종가, 거래량, 거래대금 from etfkor."+symbol
+    df = pd.DataFrame(get_data_from_db(sql),columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금'])
+    df['날짜'] = df['날짜'].apply(lambda x: x.strftime('%Y-%m-%d'))
+    for col in ['시가','고가','저가','종가','거래량','거래대금']:
+        df[col] =df[col].apply(lambda x : "{:,}".format(int(x)))
+    df.sort_values('날짜',ascending=False,inplace=True)
+    history = dash_table.DataTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        style_as_list_view=True,
+        page_size=10,
+        style_cell={'fontFamily': 'sans-serif', 'fontSize': '11px','padding':0},
+        style_data={'border':'0px'},
+        style_header={
+            'backgroundColor': 'rgb(230, 230, 230)',
+            'fontWeight': 'bold'
+        },
+        style_cell_conditional=[            
+            {'if': {'column_id': '날짜'},'textAlign': 'left','width': '200px'},
+            {'if': {'column_id': '시가총액'},'width': '100px'},
+            {'if': {'column_id': '등락률'},'width': '100px'}
         ],
         style_data_conditional=[
             {
                 'if': {
-                'filter_query': '{value} contains +',
-                'column_id': 'value'
+                'filter_query': '{등락률(%)} contains +',
+                'column_id': '등락률(%)'
                 },
                 'color': 'Red'
             },
             {
                 'if': {
-                'filter_query': '{value} contains -',
-                'column_id': 'value'
+                'filter_query': '{등락률(%)} contains -',
+                'column_id': '등락률(%)'
                 },
                 'color': 'Blue'
             },
         ]
     )
-    return info_table
+
+    return history
+
