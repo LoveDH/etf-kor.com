@@ -190,7 +190,7 @@ def get_etf_table_by_market_cap(by):
 
     if by == '시가총액 TOP 10':
         df.sort_values(by='시가총액', ascending=False, inplace=True)
-        df = df.head(20)
+        df = df.head(10)
     elif by == '등락률 TOP 10':
         df.sort_values(by='등락률', ascending=False, inplace=True)
         df = df.head(10)
@@ -254,7 +254,8 @@ def get_mini_treemap():
     fig.update_traces(textposition='middle center', selector=dict(type='treemap'))
     result = dcc.Graph(
             id='ETF유형별 등락률',
-            figure=fig
+            figure=fig,
+            config={'staticPlot':True}
         )
     return result
 
@@ -345,7 +346,7 @@ def get_etf_pie_chart(symbol):
 
     df = pd.DataFrame(get_data_from_db(sql),columns=['종목','계약수','금액','비중'])
     fig = px.pie(df.head(10), values='비중', names='종목')
-    fig.update_layout({'title':'구성 비율','margin':{"r":0,"t":50,"l":0,"b":10},'width':350,'height':350})
+    fig.update_layout({'title':'TOP10 구성 비율','margin':{"r":0,"t":50,"l":0,"b":10},'width':350,'height':350})
     fig.update_traces(hole=.4, textinfo='percent+label',showlegend=False)
     result = dcc.Graph(
             id='포트폴리오 비율',
@@ -365,10 +366,7 @@ def get_etf_pie_chart(symbol):
         },
         style_cell_conditional=[            
             {'if': {'column_id': '종목'},'textAlign': 'left','width': '100px','fontWeight': 'bold'},
-        ],
-        style_table={
-            'overflowY': 'scroll'
-        }
+        ]
     )
     return pf_table, result
 
