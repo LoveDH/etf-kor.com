@@ -206,6 +206,79 @@ compare = html.Div([
     ],style={'width':'100%'})
 ],style={'width':'100%'})
 
-portfolio = html.Div([
-    
-])
+# portfolio = html.Div([
+#     html.Table([
+#         html.Td([
+#             html.Table([
+#                 html.Tr([
+#                     html.Td([
+#                         dcc.Dropdown(id='portfolio-etfs-1',
+#                             multi=True,
+#                             placeholder="ETF 종목명을 입력하세요.",
+#                             value='',
+#                             style={'fontSize': 15})
+#                     ],style={'width':'100%'}),
+#                     html.Td([
+#                         dcc.Input(id='input1', value='initial value', type='number')
+#                     ]),
+#                 ]),
+#                 html.Tr([
+#                     html.Td([
+#                         dcc.Dropdown(id='portfolio-etfs-2',
+#                             multi=True,
+#                             placeholder="ETF 종목명을 입력하세요.",
+#                             value='',
+#                             style={'fontSize': 15})
+#                     ],style={'width':'100%'}),
+#                     html.Td([
+#                         dcc.Input(id='input2', value='initial value', type='number')
+#                     ]),
+#                 ]),
+#                 html.Tr([
+#                     html.Td([
+#                         dcc.Dropdown(id='portfolio-etfs-3',
+#                             multi=True,
+#                             placeholder="ETF 종목명을 입력하세요.",
+#                             value='',
+#                             style={'fontSize': 15})
+#                     ],style={'width':'100%'}),
+#                     html.Td([
+#                         dcc.Input(id='input3', value='initial value', type='number')
+#                     ]),
+#                 ]),
+#                 html.Tr([
+#                     html.Td([
+#                         dcc.Dropdown(id='portfolio-etfs-4',
+#                             multi=True,
+#                             placeholder="ETF 종목명을 입력하세요.",
+#                             value='',
+#                             style={'fontSize': 15}),
+#                     ],style={'width':'100%'}),
+#                     html.Td([
+#                         dcc.Input(id='input4', value='initial value', type='number')
+#                     ]),
+#                 ]),
+#                 html.Tr([
+#                     html.Td([
+#                         dcc.Dropdown(id='portfolio-etfs-5',
+#                             multi=True,
+#                             placeholder="ETF 종목명을 입력하세요.",
+#                             value='',
+#                             style={'fontSize': 15})
+#                     ],style={'width':'100%'}),
+#                     html.Td([
+#                         dcc.Input(id='input5', value='initial value', type='number')
+#                     ],style={'width':10}),
+#                 ]),
+#             ],style={'width':'100%'})
+#         ],style={'width':'30%'}),
+#         html.Td([
+#             html.Tr([
+
+#             ]),
+#             html.Tr([
+
+#             ])
+#         ],style={'width':'70%'})
+#     ],style={'width':'100%'})
+# ],style={'width':'100%'})

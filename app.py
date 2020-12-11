@@ -29,33 +29,22 @@ app.layout = html.Div([
         dcc.Tab([pg.world],label='World', value='tab-4',style=tab_style, selected_style=selected_tab_style),
         #dcc.Tab([pg.screener],label='Screener', value='tab-5',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.compare],label='Compare', value='tab-6',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.portfolio],label='Porfolio', value='tab-7',style=tab_style, selected_style=selected_tab_style),
+        #dcc.Tab([pg.portfolio],label='Porfolio', value='tab-7',style=tab_style, selected_style=selected_tab_style),
     ]+[dcc.Tab(value='blank',style=tab_style, selected_style=tab_style)]*6, # 탭 여백
     loading_state={'is_loding':True},colors={"primary": "#2e2e2e", "background": "grey"},style={'height':'30px','padding':'6px'}),
 ],style={'max-width':'1300px','margin':'0 auto'})
 
+options_list = [{'label': i,'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
 
-@app.callback(Output('symbols-search', 'options'),
-            [Input('symbols-search', 'value')])
+@app.callback([Output('symbols-search', 'options'),Output('compare 1', 'options'),Output('compare 2', 'options')],
+            Input('symbols-search','value'))
 def symbols_names_callback(value):
-    options_list = [{'label': i,
-                     'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
-    return options_list
+    return options_list, options_list, options_list
 
-@app.callback(Output('compare 1', 'options'),
-            [Input('compare 1', 'value')])
-def symbols_names_callback(value):
-    options_list = [{'label': i,
-                     'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
-    return options_list
-
-@app.callback(Output('compare 2', 'options'),
-            [Input('compare 2', 'value')])
-def symbols_names_callback(value):
-    options_list = [{'label': i,
-                     'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
-    return options_list
-
+# @app.callback([Output('portfolio-etfs-1', 'options'),Output('portfolio-etfs-2', 'options'),Output('portfolio-etfs-3', 'options'),Output('portfolio-etfs-4', 'options'),Output('portfolio-etfs-5', 'options')],
+#             Input('symbols-search','value'))
+# def symbols_names_callback(value):
+#     return options_list, options_list, options_list, options_list, options_list
 
 @app.callback(
 [Output('kospi-graph', 'figure'),Output('kosdaq-graph', 'figure'),Output('snp500-graph', 'figure')],

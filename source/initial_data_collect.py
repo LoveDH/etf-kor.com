@@ -21,7 +21,7 @@ DATABASE = config["MYSQL_INFO"]['DATABASE']
 CHARSET1 = config["MYSQL_INFO"]['CHARSET1']    # MySQL에서 사용할 캐릭터셋 이름
 CHARSET2 = config["MYSQL_INFO"]['CHARSET2']    # Python에서 사용할 캐릭터셋 이름
 
-today = datetime.today().strftime('%Y%m%d')
+
 
 def get_etf_info(Symbol):
     url = "https://finance.naver.com/item/coinfo.nhn?code="+Symbol
@@ -76,7 +76,8 @@ def save_config():
 
 
 if __name__=='__main__':
-
+    today = datetime.today().strftime('%Y%m%d')
+    
     # 데이터베이스 포맷 설정
     con_str_fmt = "mysql+mysqldb://{0}:{1}@{2}:{3}/{4}?charset={5}"
     con_str = con_str_fmt.format(USERNAME, PASSWORD, HOSTNAME, PORT, DATABASE, CHARSET1)
@@ -109,6 +110,6 @@ if __name__=='__main__':
     for Symbol in etf_info['Symbol']:
         get_stock_prices(Symbol)
     print('...주가 데이터 저장 완료')
-
+    
     config['LAST_UPDATE'] = today
     save_config()
