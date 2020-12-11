@@ -179,7 +179,7 @@ compare = html.Div([
                 {'label': '3개월', 'value': 92},
                 {'label': '6개월', 'value': 183},
                 {'label': '1년', 'value': 365},
-                {'label': '1년', 'value': 1095},
+                {'label': '3년', 'value': 1095},
                 {'label': '5년', 'value': 1825}
             ],
             value=30,
