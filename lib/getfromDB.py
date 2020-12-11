@@ -396,3 +396,51 @@ def get_compare_chart(period, symbol1,symbol2):
             figure=fig
     )
     return result
+
+def get_compare_table(symbol):
+    
+    # 테이블
+    sql = "select * from etfkor.etfList WHERE Symbol = "+symbol
+    info_table = pd.DataFrame(get_data_from_db(sql),columns=['코드','종목명','현재가','전일종가','등락률','시가총액','상장주식수','수수료','기초지수','대분류','소분류','상장일'])
+    name = info_table['종목명'][0]
+    info_table['현재가'] = info_table['현재가'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['전일종가'] = info_table['전일종가'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['상장주식수'] = info_table['상장주식수'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['등락률'] = info_table['등락률'].apply(lambda x : "+"+str(x)+'%' if x>0 else str(x)+'%')
+    info_table['수수료'] = info_table['수수료'].apply(lambda x : str(x)+'%' if x>0 else str(x))
+    info_table['시가총액'] = info_table['시가총액'].apply(lambda x : "{:,}".format(int(x/100000000))+'(억원)')
+    
+    info_table = info_table.T
+    info_table.rename(columns={0: "value"},inplace=True)
+    info_table.reset_index(inplace=True)
+
+    info_table = dash_table.DataTable(
+        data=info_table.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in info_table.columns],
+        style_as_list_view=True,
+        style_cell={'fontFamily': 'sans-serif', 'fontSize': 15,'padding':0},
+        style_data={'border':'0px'},
+        style_header={
+            'display': 'none'
+        },
+        style_cell_conditional=[            
+            {'if': {'column_id': 'index'},'textAlign': 'left','width': '100px','fontWeight': 'bold'},
+        ],
+        style_data_conditional=[
+            {
+                'if': {
+                'filter_query': '{value} contains +',
+                'column_id': 'value'
+                },
+                'color': 'Red'
+            },
+            {
+                'if': {
+                'filter_query': '{value} contains -',
+                'column_id': 'value'
+                },
+                'color': 'Blue'
+            },
+        ]
+    )
+    return info_table

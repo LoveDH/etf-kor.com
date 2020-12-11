@@ -149,27 +149,29 @@ world = html.Div([
 screener = None
 compare = html.Div([
     html.Div(style={'height':'100'}),
-    html.Table([
-        html.Tr([
-            html.Td([
-                dcc.Dropdown(id='compare 1',
-                    multi=False,
-                    placeholder="ETF 1번",
-                    value='',
-                    style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+    html.Div([
+        html.Table([
+            html.Tr([
+                html.Td([
+                    dcc.Dropdown(id='compare 1',
+                        multi=False,
+                        placeholder="ETF 1번",
+                        value='',
+                        style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+                ]),
+                html.Td([
+                    html.Button('비교하기', id='compare-button', n_clicks=0)
+                ],style={'width':90}),
+                html.Td([
+                    dcc.Dropdown(id='compare 2',
+                        multi=False,
+                        placeholder="ETF 2번",
+                        value='',
+                        style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+                ]),
             ]),
-            html.Td([
-                html.Button('비교하기', id='compare-button', n_clicks=0)
-            ],style={'width':90}),
-            html.Td([
-                dcc.Dropdown(id='compare 2',
-                    multi=False,
-                    placeholder="ETF 2번",
-                    value='',
-                    style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
-            ]),
-        ]),
-    ],style={'width':700,'textAlign': 'center'}),
+        ],style={'width':'100%','textAlign': 'center'}),
+    ],style={'width':'100%','textAlign': 'center'}),
     html.Div([
         dcc.RadioItems(
             id='compare-period',
@@ -189,18 +191,18 @@ compare = html.Div([
     html.Div([
         html.Div([
             html.Td(style={'width':'20%'}),
-            html.Td(id='compare-chart',style={'width':'60%'}),
+            html.Td(id='compare-chart',style={'width':900,'height':400}),
             html.Td(style={'width':'20%'}),
         ],style={'width':'100%'})
-    ],style={'textalign':'center'})
-    #     html.Div(style={'height':20}),
-    #     html.Table([
-    #         html.Td(style={'width':'15%'}),
-    #         html.Td(id='portfolio-table',style={'width':'40%'}),
-    #         html.Td(style={'width':'10%'}),
-    #         html.Td(id='portfolio-piechart',style={}),
-    #         html.Td(style={'width':'15%'}),
-    #     ],style={'width':'100%'}),
-    # ])    
-],style={'textAlign': 'center'})
+    ],style={'textalign':'center'}),
+    html.Div([
+        html.Table([
+            html.Td(style={'width':'20%'}),
+            html.Td(id='compare-table1'),
+            html.Td(style={'width':'5%'}),
+            html.Td(id='compare-table2'),
+            html.Td(style={'width':'20%'}),
+        ],style={'width':'100%','textalign':'center'})
+    ],style={'width':'100%','textAlign': 'center'})
+],style={'width':'100%','textAlign': 'center'})
 portfolio = None
