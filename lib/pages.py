@@ -61,11 +61,11 @@ home =  html.Div([
             html.Td(style={'width':'2%'}),
             html.Td([
                 html.Tr([gd.get_mini_treemap()]),
-                html.Tr([gd.get_etf_pie_chart()])
+                html.Tr([gd.get_etf_pie_chart_top10()])
             ],style={'width':'26%'}),
         ]),
     ])
-])
+],style={'textAlign': 'center'})
 
 # 검색
 search = html.Div([
@@ -83,36 +83,49 @@ search = html.Div([
             ])
         ])
     ],style={'width':700}),
-    html.Div(id='etf-info',children=[
-        html.H1(id='etf-name'),
-        html.Table([
-            html.Td(id='etf-chart'),
-            html.Td([
-            
-            ])
-        ])
-    ])
-])
-
-# 트렌드
-trends = html.Div([
     html.Div([
         dcc.Slider(
-            id='trends-slider',
+            id='range-slider',
             min=1,
             max=400,
             step=None,
-            value=1,
+            value=31,
             marks={
                 1:'1일',
                 31:'1개월',
                 92:'3개월',
                 183:'6개월',
                 275:'9개월',
-                365:'12개월'
+                365:'12개월',
+                400:'전체'
             }
         )
-    ],style={'width':550,'padding':'5px'}),
+    ],style={'width':600,'padding':'5px'}),
+    html.Div(id='etf-info',children=[
+        html.Table([
+            html.Td(style={'width':200}),
+            html.H1(id='etf-name')
+        ]),
+        html.Table([
+            html.Td(style={'width':'10%'}),
+            html.Td(id='etf-chart',style={'width':'50%'}),
+            html.Td(style={'width':'5%'}),
+            html.Td(id='etf-info-table',style={}),
+            html.Td(style={'width':'25%'}),
+        ],style={'width':'100%'}),
+        html.Div(style={'height':20}),
+        html.Table([
+            html.Td(style={'width':'15%'}),
+            html.Td(id='portfolio-table',style={'width':'40%'}),
+            html.Td(style={'width':'10%'}),
+            html.Td(id='portfolio-piechart',style={}),
+            html.Td(style={'width':'15%'}),
+        ],style={'width':'100%'}),
+    ])
+])
+
+# 트렌드
+trends = html.Div([
     dcc.Graph(
         id='etf-fluct-rate',
         figure=gd.get_tree_map()
@@ -133,25 +146,60 @@ world = html.Div([
     ])
 ])
 
-# etf 종목 정보
-stock_chart = html.Div([
-    dcc.RadioItems(
-        id='stock-period',
-        options=[
-            {'label': '1주일', 'value': 7},
-            {'label': '1개월', 'value': 30},
-            {'label': '3개월', 'value': 90},
-            {'label': '6개월', 'value': 180},
-            {'label': '1년', 'value': 365},
-            {'label': 'YTD', 'value': 'ytd'},
-            {'label': '5년', 'value': 1825}
-        ],
-        value=30,
-        labelStyle={'display': 'inline-block'},style={'padding':'10px'}
-    ),
-    html.Div([gd.get_stock_chart('069500')],id='stock-chart')
-])
-
 screener = None
-compare = None
+compare = html.Div([
+    html.Div(style={'height':'100'}),
+    html.Table([
+        html.Tr([
+            html.Td([
+                dcc.Dropdown(id='compare 1',
+                    multi=False,
+                    placeholder="ETF 1번",
+                    value='',
+                    style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+            ]),
+            html.Td([
+                html.Button('비교하기', id='compare-button', n_clicks=0)
+            ],style={'width':90}),
+            html.Td([
+                dcc.Dropdown(id='compare 2',
+                    multi=False,
+                    placeholder="ETF 2번",
+                    value='',
+                    style={'height':'30px','min_width':'100px','fontSize': 15,'textAlign': 'left'})
+            ]),
+        ]),
+    ],style={'width':700,'textAlign': 'center'}),
+    html.Div([
+        dcc.RadioItems(
+            id='compare-period',
+            options=[
+                {'label': '1주일', 'value': 7},
+                {'label': '1개월', 'value': 31},
+                {'label': '3개월', 'value': 92},
+                {'label': '6개월', 'value': 183},
+                {'label': '1년', 'value': 365},
+                {'label': '5년', 'value': 1825}
+            ],
+            value=30,
+            labelStyle={'display': 'inline-block'},style={'padding':'10px','textalign':'center'}
+        ),
+    ],style={'textalign':'center'}),
+    html.Div([
+        html.Div([
+            html.Td(style={'width':'20%'}),
+            html.Td(id='compare-chart',style={'width':'60%'}),
+            html.Td(style={'width':'20%'}),
+        ],style={'width':'100%'})
+    ],style={'textalign':'center'})
+    #     html.Div(style={'height':20}),
+    #     html.Table([
+    #         html.Td(style={'width':'15%'}),
+    #         html.Td(id='portfolio-table',style={'width':'40%'}),
+    #         html.Td(style={'width':'10%'}),
+    #         html.Td(id='portfolio-piechart',style={}),
+    #         html.Td(style={'width':'15%'}),
+    #     ],style={'width':'100%'}),
+    # ])    
+],style={'textAlign': 'center'})
 portfolio = None

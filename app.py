@@ -27,7 +27,7 @@ app.layout = html.Div([
         dcc.Tab(children=[pg.search],label='Search', value='tab-2',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.trends],label='Trends', value='tab-3',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.world],label='World', value='tab-4',style=tab_style, selected_style=selected_tab_style),
-        dcc.Tab([pg.screener],label='Screener', value='tab-5',style=tab_style, selected_style=selected_tab_style),
+        #dcc.Tab([pg.screener],label='Screener', value='tab-5',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.compare],label='Compare', value='tab-6',style=tab_style, selected_style=selected_tab_style),
         dcc.Tab([pg.portfolio],label='Porfolio', value='tab-7',style=tab_style, selected_style=selected_tab_style),
     ]+[dcc.Tab(value='blank',style=tab_style, selected_style=tab_style)]*6, # 탭 여백
@@ -42,22 +42,59 @@ def symbols_names_callback(value):
                      'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
     return options_list
 
+@app.callback(Output('compare 1', 'options'),
+            [Input('compare 1', 'value')])
+def symbols_names_callback(value):
+    options_list = [{'label': i,
+                     'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
+    return options_list
+
+@app.callback(Output('compare 2', 'options'),
+            [Input('compare 2', 'value')])
+def symbols_names_callback(value):
+    options_list = [{'label': i,
+                     'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
+    return options_list
+
+
 @app.callback(
 [Output('kospi-graph', 'figure'),Output('kosdaq-graph', 'figure'),Output('snp500-graph', 'figure')],
 [Input('index-period', 'value')])
 def update_figure(selected_period):
     return gd.get_indice_data('KS11',selected_period),gd.get_indice_data('KQ11',selected_period),gd.get_indice_data('US500',selected_period)
 
-@app.callback([Output('etf-name','children'),Output('etf-chart','children')],
-Input('search-button','n_clicks'),State('symbols-search','value'))
+@app.callback([Output('etf-name','children'),Output('etf-chart','children'),Output('etf-info-table','children')],
+[Input('search-button','n_clicks'),Input('range-slider','value')],[State('symbols-search','value')])
+def show_etf_chart(n_clicks, period, symbol):
+    if symbol=='':
+        return (None,None,None)
+    name, chart, table = gd.get_etf_chart(symbol, period)
+    if n_clicks>0:
+        return name, chart, table
+    else:
+        return (None,None,None)
+
+@app.callback([Output('portfolio-table','children'),Output('portfolio-piechart','children')],
+Input('search-button','n_clicks'),[State('symbols-search','value')])
 def show_etf_chart(n_clicks, symbol):
     if symbol=='':
         return (None,None)
-    name, chart = gd.get_stock_chart(symbol)
+    table, chart = gd.get_etf_pie_chart(symbol)
     if n_clicks>0:
-        return name, chart
+        return table, chart
     else:
         return (None,None)
+
+@app.callback(Output('compare-chart','children'),
+[Input('compare-button','n_clicks'),Input('compare-period','value')],[State('compare 1','value'),State('compare 2','value')])
+def show_etf_chart(n_clicks, period, symbol1, symbol2):
+    if symbol1=='' or symbol1=='':
+        return None
+    chart = gd.get_compare_chart(period, symbol1, symbol2)
+    if n_clicks>0:
+        return chart
+    else:
+        return None
 
 if __name__ == "__main__":
     app.run_server(debug=True)

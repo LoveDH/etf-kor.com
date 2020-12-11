@@ -1,3 +1,4 @@
+from io import DEFAULT_BUFFER_SIZE
 import pymysql
 from sqlalchemy import create_engine
 import json
@@ -77,7 +78,7 @@ def get_tree_map():
                     color='등락률', hover_data=['종목명','상장일'],
                     color_continuous_scale='RdBu_r',
                     color_continuous_midpoint=0)
-    fig.update_layout({'margin':{"r":0,"t":10,"l":0,"b":0},'height':600})
+    fig.update_layout({'margin':{"r":0,"t":15,"l":0,"b":0},'height':600})
     fig.update_traces(textfont={'family':'sans-serif','size':15},textposition='middle center', selector=dict(type='treemap'))
 
     return fig
@@ -95,7 +96,7 @@ def get_world_map():
     df['등락률'] = abs(df['등락률'])
 
     fig = px.scatter_geo(df, locations="국가코드", color="pn",
-                        hover_name="국가", size=df['등락률'],size_max=60,
+                        hover_name="국가", size=df['등락률'],size_max=70,
                         hover_data=['지수명','현재가','전일대비'],
                         color_discrete_sequence=['red','blue'],
                         projection="robinson")
@@ -258,11 +259,11 @@ def get_mini_treemap():
     return result
 
 # HOME pie차트 호출
-def get_etf_pie_chart():
+def get_etf_pie_chart_top10():
     sql = "select Name, market_cap from etfkor.etfList"
 
     df = pd.DataFrame(get_data_from_db(sql), columns=['종목명','시가총액'])
-    df = df.head(50)
+    df = df.head(10)
     fig = px.pie(df, values='시가총액', names='종목명')
     fig.update_layout({'title':'시장 비율','margin':{"r":0,"t":50,"l":0,"b":10},'width':350,'height':350})
     fig.update_traces(hole=.4,textposition='inside', textinfo='percent+label',showlegend=False)
@@ -272,32 +273,126 @@ def get_etf_pie_chart():
     )
     return result
 
-
-def get_etf_single_chart(code):
-    sql = "select * from etfkor."+code
-    df = pd.DataFrame(get_data_from_db(sql), columns=['Date', 'Close', 'Open', 'High', 'Low', 'Volume', 'Change'])
-    fig = go.Figure(data=[go.Candlestick(x=df['Date'],
-                open=df['Open'],
-                high=df['High'],
-                low=df['Low'],
-                close=df['Close'],increasing_line_color= 'Red', decreasing_line_color= 'Blue')],
-                layout={'height':200,'width':370,'margin':{"r":0,"t":0,"l":0,"b":0}})
-    fig.update_layout(xaxis=dict(visible=False,type='category',rangeslider=dict(visible=False)))
+# Search etf 차트 호출
+def get_etf_chart(symbol, period):
+    # 차트
+    if period==400:
+        sql = "select * from etfkor."+symbol
+        df = pd.DataFrame(get_data_from_db(sql),columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금','기초지수'])
+    else:
+        sql = "select * from etfkor."+symbol
+        df = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금','기초지수'])
+    fig = go.Figure(data=[go.Candlestick(x=df['날짜'],
+                open=df['시가'],
+                high=df['고가'],
+                low=df['저가'],
+                close=df['종가'],increasing_line_color= 'Red', decreasing_line_color= 'Blue')],
+                layout={'height':400,'width':640,'margin':{"r":0,"t":0,"l":0,"b":0}})
+    fig.update_layout(yaxis=dict(tickformat="digit",autorange=True,fixedrange=False))
     fig.update_traces(line={'width':1}, selector=dict(type='candlestick'))
-    result = dcc.Graph(figure=fig)
-
-    return result
-
-def get_stock_chart(symbol):
-
-    sql = "select * from etfkor."+symbol
-    df = pd.DataFrame(get_data_from_db(sql),columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금','기초지수'])
-    sql = "select * from etfkor.etfList WHERE Symbol = "+symbol
-    info = pd.DataFrame(get_data_from_db(sql),columns=['코드','종목명','현재가','종가','등락률','시가총액','상장주식수','수수료','기초지수','유형1','유형2','상장일'])
-    fig = go.Figure(data=[go.Scatter(x=df['날짜'],
-                y=df['종가'])],
-                layout={'height':200,'width':370,'margin':{"r":0,"t":0,"l":0,"b":0}})
     chart = dcc.Graph(
         figure=fig
     )
-    return info['종목명'][0], chart
+
+    # 테이블
+    sql = "select * from etfkor.etfList WHERE Symbol = "+symbol
+    info_table = pd.DataFrame(get_data_from_db(sql),columns=['코드','종목명','현재가','전일종가','등락률','시가총액','상장주식수','수수료','기초지수','대분류','소분류','상장일'])
+    name = info_table['종목명'][0]
+    info_table['현재가'] = info_table['현재가'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['전일종가'] = info_table['전일종가'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['상장주식수'] = info_table['상장주식수'].apply(lambda x : "{:,}".format(int(x)))
+    info_table['등락률'] = info_table['등락률'].apply(lambda x : "+"+str(x)+'%' if x>0 else str(x)+'%')
+    info_table['수수료'] = info_table['수수료'].apply(lambda x : str(x)+'%' if x>0 else str(x))
+    info_table['시가총액'] = info_table['시가총액'].apply(lambda x : "{:,}".format(int(x/100000000))+'(억원)')
+    
+    info_table = info_table.T
+    info_table.rename(columns={0: "value"},inplace=True)
+    info_table.reset_index(inplace=True)
+
+    info_table = dash_table.DataTable(
+        data=info_table.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in info_table.columns],
+        style_as_list_view=True,
+        style_cell={'fontFamily': 'sans-serif', 'fontSize': 15,'padding':0},
+        style_data={'border':'0px'},
+        style_header={
+            'display': 'none'
+        },
+        style_cell_conditional=[            
+            {'if': {'column_id': 'index'},'textAlign': 'left','width': '100px','fontWeight': 'bold'},
+        ],
+        style_data_conditional=[
+            {
+                'if': {
+                'filter_query': '{value} contains +',
+                'column_id': 'value'
+                },
+                'color': 'Red'
+            },
+            {
+                'if': {
+                'filter_query': '{value} contains -',
+                'column_id': 'value'
+                },
+                'color': 'Blue'
+            },
+        ]
+    )
+    return name, chart, info_table
+
+def get_etf_pie_chart(symbol):
+    sql = "select 종목, 계약수, 금액, 비중 from etfkor."+symbol+'_pf'
+
+    df = pd.DataFrame(get_data_from_db(sql),columns=['종목','계약수','금액','비중'])
+    fig = px.pie(df.head(10), values='비중', names='종목')
+    fig.update_layout({'title':'구성 비율','margin':{"r":0,"t":50,"l":0,"b":10},'width':350,'height':350})
+    fig.update_traces(hole=.4, textinfo='percent+label',showlegend=False)
+    result = dcc.Graph(
+            id='포트폴리오 비율',
+            figure=fig
+    )
+
+    pf_table = dash_table.DataTable(
+        data=df.to_dict('records'),
+        columns=[{'id': c, 'name': c} for c in df.columns],
+        style_as_list_view=True,
+        page_size=10,
+        style_cell={'fontFamily': 'sans-serif', 'fontSize': 11,'padding':0},
+        style_data={'border':'0px'},
+        style_header={
+            'backgroundColor': 'rgb(230, 230, 230)',
+            'fontWeight': 'bold'
+        },
+        style_cell_conditional=[            
+            {'if': {'column_id': '종목'},'textAlign': 'left','width': '100px','fontWeight': 'bold'},
+        ],
+        style_table={
+            'overflowY': 'scroll'
+        }
+    )
+    return pf_table, result
+
+def get_compare_chart(period, symbol1,symbol2):
+
+    sql = "select 날짜, 종가 from etfkor."+symbol1
+    df1 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','종가'])
+
+    sql = "select 날짜, 종가 from etfkor."+symbol2
+    df2 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','종가'])
+
+    df1['1번'] = df1['종가']
+    df1['2번'] = df2['종가']
+    del df1['종가']
+    df1.set_index('날짜',drop=True,inplace=True)
+    df1 = df1.T
+
+    for date in df1.columns[::-1]:
+        df1[date] = round(df1[date] / df1[df1.columns[0]], 3)
+    df1 = (df1.T - 1)*100
+
+    fig = px.line(df1, x=df1.index, y=['1번','2번'])
+    result = dcc.Graph(
+            id='수익률 비교차트',
+            figure=fig
+    )
+    return result
