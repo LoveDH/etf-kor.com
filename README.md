@@ -2,9 +2,9 @@
 
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
-<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=1L8xwpF_vRA_4HJp4fqJ2oJItUPawdUIb">
-<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=18lloze7Tp5vG2zbr235uHxJqmwDcJu2S">
-<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=1vLY3ReR3zntn7LzSzgo0Vd06ra4UWYYZ">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=1L8xwpF_vRA_4HJp4fqJ2oJItUPawdUIb">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=18lloze7Tp5vG2zbr235uHxJqmwDcJu2S">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=1vLY3ReR3zntn7LzSzgo0Vd06ra4UWYYZ">
 
 ## 요약
 
