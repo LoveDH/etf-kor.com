@@ -2,6 +2,10 @@
 
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
+<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=1L8xwpF_vRA_4HJp4fqJ2oJItUPawdUIb">
+<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=18lloze7Tp5vG2zbr235uHxJqmwDcJu2S">
+<img style="max-width: 80%; height: auto;" src="https://drive.google.com/uc?export=view&id=1vLY3ReR3zntn7LzSzgo0Vd06ra4UWYYZ">
+
 ## 요약
 
 &nbsp;코로나19 바이러스 확산으로 인해 세계 경제가 침체하고 제로금리 시대가 오면서 투자는 이제 선택이 아닌 필수인 시대가 도래했습니다. 주식 투자를 하는 개인이 폭발적으로 늘어나면서 2020년 초에는 ‘동학개미운동’이라는 말이 나올 정도였습니다. 하지만 그 속에는 주식을 처음 투자해보는 초보투자자들이 많습니다. 
