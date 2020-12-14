@@ -1,6 +1,6 @@
 # etf-kor.com
 
-[![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/"이티에프코리아"]
+[![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/"이티에프코리아")
 
 # 요약
 
