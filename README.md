@@ -1,3 +1,3 @@
 # etf-kor.com
-한국 ETF 대시보드 개발 프로젝트
-![logo](./assets/logo.png)
+
+<center>![ETF코리아](./assets/logo.png)</center>
