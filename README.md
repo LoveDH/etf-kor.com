@@ -1,5 +1,4 @@
-# 한국 ETF 대시보드 개발 프로젝트 etf-kor.com
-
+# 한국 ETF 대시보드 개발 프로젝트
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
 <img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=1L8xwpF_vRA_4HJp4fqJ2oJItUPawdUIb">
