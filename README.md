@@ -45,7 +45,7 @@
 └── source : 그래프 소스가 담겨있는 폴더(실행과 상관없음)
 ```
 
-## 실행법
+## 실행 방법
 > 실행 전 Mysql 데이터베이스 세팅 및 configure에 정보 입력
 ```
 pip install -r requirements.txt
@@ -57,4 +57,34 @@ python lib/initial_data_collect.py
 ```
 # 서버 실행
 python app.py
+```
+
+#### PyMySQL을 통한 데이터베이스 연동 함수
+```
+with open('config.json', 'r') as f:
+    config = json.load(f)
+    
+HOSTNAME = config["MYSQL_INFO"]['HOSTNAME']
+PORT     = config["MYSQL_INFO"]['PORT']
+USERNAME = config["MYSQL_INFO"]['USERNAME']
+PASSWORD = config["MYSQL_INFO"]['PASSWORD']
+DATABASE = config["MYSQL_INFO"]['DATABASE']
+CHARSET1 = config["MYSQL_INFO"]['CHARSET1']    # MySQL에서 사용할 캐릭터셋 이름
+CHARSET2 = config["MYSQL_INFO"]['CHARSET2']    # Python에서 사용할 캐릭터셋 이름
+
+# 적절한 sql문을 input으로 할당하면 해당 데이터베이스에서 sql을 실행한 결과값을 반환한다.
+def get_data_from_db(sql):
+
+    connection = pymysql.connect(
+        host=HOSTNAME,
+        user=USERNAME,
+        password=PASSWORD,
+        db=DATABASE,
+        charset=CHARSET1)
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data
 ```
