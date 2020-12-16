@@ -60,7 +60,7 @@ python app.py
 ```
 
 #### PyMySQL을 통한 데이터베이스 연동 함수
-```{.python}
+```python
 with open('config.json', 'r') as f:
     config = json.load(f)
     
