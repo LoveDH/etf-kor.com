@@ -399,14 +399,15 @@ def get_compare_chart(period, symbol1,symbol2):
             df2 = pd.DataFrame(get_data_from_db(sql2),columns=['날짜',name2])
 
     merged_df = pd.merge(left=df1, right=df2, how='outer', on='날짜')
-    merged_df.set_index('날짜',drop=True,inplace=True)
     merged_df.fillna(method='bfill',inplace=True)
-    merged_df = merged_df.T
-    for date in merged_df.columns[::-1]:
-        merged_df[date] = round(merged_df[date] / merged_df[merged_df.columns[0]], 3)
-    merged_df = (merged_df.T - 1)*100
+
+    # 수익률 계산
+    merged_df[name1] = (merged_df[name1]/merged_df.loc[0,name1]-1)*100
+    merged_df[name2] = (merged_df[name2]/merged_df.loc[0,name2]-1)*100
+    merged_df.set_index('날짜',drop=True,inplace=True)
+
     fig = px.line(merged_df, x=merged_df.index, y=[name1,name2])
-    fig.update_layout({'margin':{"r":0,"t":0,"l":0,"b":100}})
+    fig.update_layout({'margin':{"r":0,"t":0,"l":0,"b":100},'yaxis_title':"수익률(%)"})
     result = dcc.Graph(
             id='수익률 비교차트',
             figure=fig
