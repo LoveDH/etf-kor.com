@@ -186,7 +186,8 @@ compare = html.Div([
                 {'label': '6개월', 'value': 183},
                 {'label': '1년', 'value': 365},
                 {'label': '3년', 'value': 1095},
-                {'label': '5년', 'value': 1825}
+                {'label': '5년', 'value': 1825},
+                {'label': '전체', 'value': 'all'}
             ],
             value=30,
             labelStyle={'display': 'inline-block'},style={'padding':'10px','textalign':'center'}

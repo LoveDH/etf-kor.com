@@ -283,6 +283,11 @@ def get_etf_chart(symbol, period):
     else:
         sql = "select * from etfkor."+symbol
         df = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금','기초지수'])
+    
+    # # 이동평균
+    # df['5일'] = df['종가'].rolling(5).mean()
+    # df['20일'] = df['종가'].rolling(20).mean()
+
     fig = go.Figure(data=[go.Candlestick(x=df['날짜'],
                 open=df['시가'],
                 high=df['고가'],
@@ -376,17 +381,22 @@ def get_compare_chart(period, symbol1,symbol2):
     name1 = list(etflist.loc[etflist['Symbol']==symbol1,'Name'])[0]
     name2 = list(etflist.loc[etflist['Symbol']==symbol2,'Name'])[0]
     
-    sql = "select 날짜, 종가 from etfkor."+symbol1
-    try:
-        df1 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜',name1])
-    except:
-        df1 = pd.DataFrame(get_data_from_db(sql),columns=['날짜',name1])
-    
-    sql = "select 날짜, 종가 from etfkor."+symbol2
-    try:
-        df2 = pd.DataFrame(get_data_from_db(sql)[-period:],columns=['날짜',name2])
-    except:
-        df2 = pd.DataFrame(get_data_from_db(sql),columns=['날짜',name2])
+    sql1 = "select 날짜, 종가 from etfkor."+symbol1
+    sql2 = "select 날짜, 종가 from etfkor."+symbol2
+
+    if period == 'all':
+        df1 = pd.DataFrame(get_data_from_db(sql1),columns=['날짜',name1])
+        df2 = pd.DataFrame(get_data_from_db(sql2),columns=['날짜',name2])
+    else:
+        try:
+            df1 = pd.DataFrame(get_data_from_db(sql1)[-period:],columns=['날짜',name1])
+        except:
+            df1 = pd.DataFrame(get_data_from_db(sql1),columns=['날짜',name1])
+
+        try:
+            df2 = pd.DataFrame(get_data_from_db(sql2)[-period:],columns=['날짜',name2])
+        except:
+            df2 = pd.DataFrame(get_data_from_db(sql2),columns=['날짜',name2])
 
     merged_df = pd.merge(left=df1, right=df2, how='outer', on='날짜')
     merged_df.set_index('날짜',drop=True,inplace=True)
@@ -396,7 +406,7 @@ def get_compare_chart(period, symbol1,symbol2):
         merged_df[date] = round(merged_df[date] / merged_df[merged_df.columns[0]], 3)
     merged_df = (merged_df.T - 1)*100
     fig = px.line(merged_df, x=merged_df.index, y=[name1,name2])
-    fig.update_layout({'margin':{"r":0,"t":0,"l":0,"b":80}})
+    fig.update_layout({'margin':{"r":0,"t":0,"l":0,"b":100}})
     result = dcc.Graph(
             id='수익률 비교차트',
             figure=fig
@@ -437,7 +447,7 @@ def get_compare_table(symbol1,symbol2):
     )
     return info_table
 
-#Search etf history
+#Search etf history 호출
 def get_history_table(symbol):
     sql = "select 날짜, NAV, 시가, 고가, 저가, 종가, 거래량, 거래대금 from etfkor."+symbol
     df = pd.DataFrame(get_data_from_db(sql),columns=['날짜','NAV','시가','고가','저가','종가','거래량','거래대금'])

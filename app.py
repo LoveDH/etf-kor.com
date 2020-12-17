@@ -10,8 +10,9 @@ import pandas as pd
 from lib import getfromDB as gd
 from lib import pages as pg
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets = external_stylesheets)
 
 tab_style = {'color': 'white','padding':'6px'}
 selected_tab_style = {'padding':'6px','color': 'white','backgroundColor': '#2e2e2e'}
