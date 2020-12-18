@@ -75,13 +75,13 @@ def get_etf_table_by_market_cap(by):
     sql = "select Name, now_price, yield_from_ex, market_cap from etfkor.etfList"
     df = pd.DataFrame(get_data_from_db(sql), columns=['종목명','현재가','등락률','시가총액'])
 
-    if by == '시가총액 TOP 20':
+    if by == '시가총액 TOP':
         df.sort_values(by='시가총액', ascending=False, inplace=True)
         df = df.head(21)
-    elif by == '등락률 상승 TOP 10':
+    elif by == '등락률 상승 TOP':
         df.sort_values(by='등락률', ascending=False, inplace=True)
         df = df.head(10)
-    elif by == '등락률 하락 TOP 10':
+    elif by == '등락률 하락 TOP':
         df.sort_values(by='등락률', ascending=True, inplace=True)
         df = df.head(10)
 
