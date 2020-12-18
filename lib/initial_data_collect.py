@@ -21,8 +21,6 @@ DATABASE = config["MYSQL_INFO"]['DATABASE']
 CHARSET1 = config["MYSQL_INFO"]['CHARSET1']    # MySQL에서 사용할 캐릭터셋 이름
 CHARSET2 = config["MYSQL_INFO"]['CHARSET2']    # Python에서 사용할 캐릭터셋 이름
 
-
-
 def get_etf_info(Symbol):
     url = "https://finance.naver.com/item/coinfo.nhn?code="+Symbol
     result = requests.get(url)
