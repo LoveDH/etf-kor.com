@@ -145,6 +145,14 @@ if __name__=='__main__':
         get_stock_prices(Symbol, last_update, today, conn)
     print('...주가 데이터 저장 완료')
 
+    # 주요 지수 데이터 저장
+    print('...주요 지수 데이터 저장 중')
+    for indice in ['KS11','KQ11', 'DJI', 'US500', 'IXIC']:
+        indice_df = fdr.DataReader(indice, '2015-01-01')
+        indice_df.to_sql(name=indice, con=conn, if_exists='replace', index=True)
+        print('추가완료...',indice)
+    print('...주요 지수 데이터 저장 완료')
+
     # 세계 지수 데이터 저장
     print('...세계 지수 데이터 저장 중')
     get_world_indice_data(conn)
