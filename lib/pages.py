@@ -51,12 +51,12 @@ home =  html.Div([
     html.Table([
         html.Tr([
             html.Td([
-                gd.get_etf_table_by_market_cap('시가총액 TOP 20')
+                gd.get_etf_table_by_market_cap('시가총액 TOP 10')
             ],style={'width':'32%'}),
             html.Td(style={'width':'2%'}),
             html.Td([
-                gd.get_etf_table_by_market_cap('등락률 TOP 10'),
-                gd.get_etf_table_by_market_cap('등락률 BOTTOM 10'),
+                gd.get_etf_table_by_market_cap('등락률 상승 TOP 10'),
+                gd.get_etf_table_by_market_cap('등락률 하락 TOP 10'),
             ],style={'width':'32%'}),
             html.Td(style={'width':'2%'}),
             html.Td([
