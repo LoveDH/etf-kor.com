@@ -51,7 +51,7 @@
 pip install -r requirements.txt
 ```
 ```
-# 초기 데이터 수집
+# 초기 데이터 수집 및 데이터 
 python lib/update_data.py
 ```
 ```
