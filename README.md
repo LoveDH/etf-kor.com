@@ -51,8 +51,8 @@
 pip install -r requirements.txt
 ```
 ```
-# 초기 데이터 수집
-python lib/initial_data_collect.py
+# 초기 데이터 수집 및 데이터 
+python lib/update_data.py
 ```
 ```
 # 서버 실행
