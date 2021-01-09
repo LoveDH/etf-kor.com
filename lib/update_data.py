@@ -8,7 +8,6 @@ import json
 from pykrx import stock
 import FinanceDataReader as fdr
 from sqlalchemy import create_engine
-import getfromDB
 import requests
 from bs4 import BeautifulSoup
 

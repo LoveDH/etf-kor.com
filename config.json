@@ -2,11 +2,11 @@
     "MYSQL_INFO": {
         "HOSTNAME": "localhost",
         "PORT": 3306,
-        "USERNAME": "swc",
+        "USERNAME": "lovedh",
         "PASSWORD": "",
         "DATABASE": "etfkor",
         "CHARSET1": "utf8",
         "CHARSET2": "utf-8"
     },
-    "LAST_UPDATE": "20201202"
+    "LAST_UPDATE": "20000101"
 }
