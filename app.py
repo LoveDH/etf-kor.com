@@ -42,11 +42,6 @@ options_list = [{'label': i,'value': j} for i, j in zip(gd.etflist['Name'], gd.e
 def symbols_names_callback(value):
     return options_list, options_list, options_list
 
-# @app.callback([Output('portfolio-etfs-1', 'options'),Output('portfolio-etfs-2', 'options'),Output('portfolio-etfs-3', 'options'),Output('portfolio-etfs-4', 'options'),Output('portfolio-etfs-5', 'options')],
-#             Input('symbols-search','value'))
-# def symbols_names_callback(value):
-#     return options_list, options_list, options_list, options_list, options_list
-
 @app.callback(
 [Output('kospi-graph', 'figure'),Output('kosdaq-graph', 'figure'),Output('snp500-graph', 'figure')],
 [Input('index-period', 'value')])
