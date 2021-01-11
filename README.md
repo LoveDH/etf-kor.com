@@ -33,14 +33,16 @@
 
 ## 폴더 구조
 ```
-├── app.py : 서버 실행 파일
+├── README.md
+├── app.py : dash 앱 정의파일
 ├── assets : css, 이미지 등을 저장하는 폴더 
+├── callbacks.py : 콜백 함수 정의
 ├── config.json : 데이터베이스 정보 및 날짜 저장
+├── index.py : 메인 화면 및 실행파일
 ├── lib
 │   ├── getfromDB.py : 데이터를 이용해 그래프 생성
 │   ├── pages.py : 페이지 레이아웃
-│   └── update_data.py : 현재 데이터 불러오기
-├── README.md
+│   └── update_data.py : 데이터 업데이트
 ├── requirements.txt : 필요한 패키지
 └── source : 그래프 소스가 담겨있는 폴더(실행과 상관없음)
 ```
@@ -56,7 +58,7 @@ python lib/update_data.py
 ```
 ```
 # 서버 실행
-python app.py
+python index.py
 ```
 
 #### PyMySQL을 통한 데이터베이스 연동 함수
