@@ -1,4 +1,3 @@
-from io import DEFAULT_BUFFER_SIZE
 import pymysql
 from sqlalchemy import create_engine
 import json

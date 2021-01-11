@@ -93,7 +93,7 @@ def get_portfolio_data(symbols, num_symbols, conn):
 
 # config 파일 저장
 def save_config(config):
-    with open('../config.json','w') as outfile:
+    with open('config.json','w') as outfile:
         json.dump(config, outfile, indent='\t')
 
 
