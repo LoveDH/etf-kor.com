@@ -3,17 +3,21 @@ from lib import getfromDB as gd
 from app import app
 
 options_list = [{'label': i,'value': j} for i, j in zip(gd.etflist['Name'], gd.etflist['Symbol'])]
+
+# 검색창 etf 리스트
 @app.callback([Output('symbols-search', 'options'),Output('compare 1', 'options'),Output('compare 2', 'options')],
             Input('symbols-search','value'))
 def symbols_names_callback(value):
     return options_list, options_list, options_list
 
+# 대표지수 그래프
 @app.callback(
 [Output('kospi-graph', 'figure'),Output('kosdaq-graph', 'figure'),Output('snp500-graph', 'figure')],
 [Input('index-period', 'value')])
 def update_figure(selected_period):
     return gd.get_indice_data('KS11',selected_period),gd.get_indice_data('KQ11',selected_period),gd.get_indice_data('US500',selected_period)
 
+# etf 정보
 @app.callback([Output('etf-name','children'),Output('etf-chart','children'),Output('etf-info-table','children')],
 [Input('search-button','n_clicks'),Input('range-slider','value')],[State('symbols-search','value')])
 def show_etf_chart(n_clicks, period, symbol):
@@ -25,6 +29,7 @@ def show_etf_chart(n_clicks, period, symbol):
     else:
         return (None,None,None)
 
+# etf 구성종목
 @app.callback([Output('portfolio-table','children'),Output('portfolio-piechart','children')],
 Input('search-button','n_clicks'),[State('symbols-search','value')])
 def show_etf_chart(n_clicks, symbol):
@@ -36,6 +41,7 @@ def show_etf_chart(n_clicks, symbol):
     else:
         return (None,None)
 
+# etf 주가 히스토리
 @app.callback(Output('etf-history','children'),
 Input('search-button','n_clicks'),[State('symbols-search','value')])
 def show_etf_chart(n_clicks, symbol):
@@ -47,6 +53,7 @@ def show_etf_chart(n_clicks, symbol):
     else:
         return None
 
+# etf 종목 비교 차트
 @app.callback(Output('compare-chart','children'),
 [Input('compare-button','n_clicks'),Input('compare-period','value')],[State('compare 1','value'),State('compare 2','value')])
 def show_compare_chart(n_clicks, period, symbol1, symbol2):
@@ -58,6 +65,7 @@ def show_compare_chart(n_clicks, period, symbol1, symbol2):
     else:
         return None
 
+# etf 종목 비교 테이블
 @app.callback(Output('compare-table','children'),
 Input('compare-button','n_clicks'),[State('compare 1','value'),State('compare 2','value')])
 def show_compare_table(n_clicks, symbol1, symbol2):
