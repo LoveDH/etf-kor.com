@@ -12,6 +12,7 @@ import callbacks
 tab_style = {'color': 'white','padding':'6px'}
 selected_tab_style = {'padding':'6px','color': 'white','backgroundColor': '#2e2e2e'}
 
+# 기본 레이아웃
 app.layout = html.Div([
     html.Div([
         html.A([

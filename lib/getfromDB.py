@@ -25,6 +25,8 @@ CHARSET2 = config["MYSQL_INFO"]['CHARSET2']    # Python에서 사용할 캐릭�
 
 indices = {'KS11':'코스피','KQ11':'코스닥','US500':'S&P500'}
 
+# mysql을 통한 데이터 호출
+# sql: 실행할 sql문
 def get_data_from_db(sql):
     connection = pymysql.connect(
         host=HOSTNAME,

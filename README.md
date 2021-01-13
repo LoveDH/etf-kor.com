@@ -90,3 +90,15 @@ def get_data_from_db(sql):
 
     return data
 ```
+
+#### 추후 업데이트 계획
+- **Home**
+    - 미국 지수 추가 (NASDAQ, DOW)
+- **Trend**
+    - 기간 옵션 추가
+- **Search**
+    - 거래량, 이동평균선 표시
+    - candle chart(일,주,연봉)와 Line chart(1일, 7일, 30일 ...)로 분리
+    - 유사 종목 추천
+- **기능 추가**
+    - **Portfolio 탭 추가**:사용자별 희망 ETF를 본인 목록에 담아 예상 과거 수익률 및 종목 구성비율 표시 기능
