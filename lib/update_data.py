@@ -11,6 +11,24 @@ from sqlalchemy import create_engine
 import requests
 from bs4 import BeautifulSoup
 
+# 한국 etf 리스트 불러오기
+def get_korean_etfs():
+    etf_info = fdr.EtfListing('KR')
+    etf_info = pd.DataFrame(etf_info, columns=['Symbol','Name','now_price','ex_price',
+                                                'yield_from_ex','market_cap','listed_shares',
+                                                'commission','base_index','type1','type2','listed_day'])
+    return etf_info
+
+def get_etf_info_from_naver(etf_info):
+
+    for idx in range(len(etf_info)):
+        Symbol = etf_info.loc[idx,'Symbol']
+        print(Symbol, end=' ')
+        etf_info.loc[idx,'now_price':'listed_day'] = get_etf_info(Symbol)
+    
+    return etf_info
+
+
 # etf 정보 크롤링 from naver
 def get_etf_info(Symbol):
     url = "https://finance.naver.com/item/coinfo.nhn?code="+Symbol
@@ -96,7 +114,6 @@ def save_config(config):
     with open('config.json','w') as outfile:
         json.dump(config, outfile, indent='\t')
 
-
 if __name__=='__main__':    
     with open('config.json', 'r') as f:
         config = json.load(f)
@@ -121,18 +138,11 @@ if __name__=='__main__':
     print('...데이터베이스 연결 완료')
 
     # 한국 etf 리스트 저장
-    etf_info = fdr.EtfListing('KR')
-    etf_info = pd.DataFrame(etf_info, columns=['Symbol','Name','now_price','ex_price',
-                                                'yield_from_ex','market_cap','listed_shares',
-                                                'commission','base_index','type1','type2','listed_day'])
+    etf_info = get_korean_etfs()
 
     # etf 정보 dataframe
     print('...ETF 정보 수집중')
-    for idx in range(len(etf_info)):
-        Symbol = etf_info.loc[idx,'Symbol']
-        print(Symbol, end=' ')
-        etf_info.loc[idx,'now_price':'listed_day'] = get_etf_info(Symbol)
-
+    etf_info = get_etf_info_from_naver(etf_info)
     etf_info.to_sql(name='etfList', con=conn, if_exists='replace', index=False)
     print('...ETF 정보 리스트 저장 완료')
 
