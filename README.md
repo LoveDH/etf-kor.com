@@ -3,7 +3,7 @@
 
 <img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1TlmnxWM2njjAx8D1eVeyHEm63R0NsnF9/view?usp=sharing">
 <img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1Vjy_HjiFQdx8PouL_bOW_VUJlh_QR7Kd/view?usp=sharing">
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1AngnT2vwnLul6cIukmJy1otkHyqtlGOK/view?usp=sharingZ">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1AngnT2vwnLul6cIukmJy1otkHyqtlGOK/view?usp=sharing">
 
 ## 개요
 
