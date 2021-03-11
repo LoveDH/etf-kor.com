@@ -1,10 +1,10 @@
 # 한국 ETF 대시보드 개발 프로젝트 (개발중)
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
-<img width=100% src="https://user-images.githubusercontent.com/44254662/110760356-f8256080-8291-11eb-8ffc-a98dad806bcc.gif">
-
-<img width=100% src="https://user-images.githubusercontent.com/44254662/110760372-fe1b4180-8291-11eb-9fe6-2458f7253359.gif">
-
+<p>
+  <img width=100% src="https://user-images.githubusercontent.com/44254662/110760356-f8256080-8291-11eb-8ffc-a98dad806bcc.gif">
+  <img width=100% src="https://user-images.githubusercontent.com/44254662/110760372-fe1b4180-8291-11eb-9fe6-2458f7253359.gif">
+</p>
 <img width=100% src="https://user-images.githubusercontent.com/44254662/110760369-fc517e00-8291-11eb-889b-23e991888e5c.gif">
 
 <img width=100% src="https://user-images.githubusercontent.com/44254662/110760362-f9ef2400-8291-11eb-866f-ba3eee42b92a.gif">
