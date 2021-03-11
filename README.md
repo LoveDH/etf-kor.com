@@ -2,8 +2,8 @@
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
 <p align="center">
-  <img width="50%" src="https://user-images.githubusercontent.com/44254662/110760356-f8256080-8291-11eb-8ffc-a98dad806bcc.gif" />
-  <img width="50%" src="https://user-images.githubusercontent.com/44254662/110760372-fe1b4180-8291-11eb-9fe6-2458f7253359.gif" />
+  <img width="49%" src="https://user-images.githubusercontent.com/44254662/110760356-f8256080-8291-11eb-8ffc-a98dad806bcc.gif" />
+  <img width="49%" src="https://user-images.githubusercontent.com/44254662/110760372-fe1b4180-8291-11eb-9fe6-2458f7253359.gif" />
 </p>
 
 <p align="center">
