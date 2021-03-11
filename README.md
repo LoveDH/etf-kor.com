@@ -1,9 +1,11 @@
 # 한국 ETF 대시보드 개발 프로젝트 (개발중)
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1TlmnxWM2njjAx8D1eVeyHEm63R0NsnF9/view?usp=sharing">
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1Vjy_HjiFQdx8PouL_bOW_VUJlh_QR7Kd/view?usp=sharing">
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1AngnT2vwnLul6cIukmJy1otkHyqtlGOK/view?usp=sharing">
+<img width="100%" height="auto" src="https://user-images.githubusercontent.com/44254662/110760356-f8256080-8291-11eb-8ffc-a98dad806bcc.gif">
+<img width="100%" height="auto" src="https://user-images.githubusercontent.com/44254662/110760372-fe1b4180-8291-11eb-9fe6-2458f7253359.gif">
+<img width="100%" height="auto" src="https://user-images.githubusercontent.com/44254662/110760369-fc517e00-8291-11eb-889b-23e991888e5c.gif">
+<img width="100%" height="auto" src="https://user-images.githubusercontent.com/44254662/110760369-fc517e00-8291-11eb-889b-23e991888e5c.gif">
+<img width="100%" height="auto" src="https://user-images.githubusercontent.com/44254662/110760349-f65b9d00-8291-11eb-8f99-3f61d2b49c54.gif">
 
 ## 개요
 
@@ -13,7 +15,7 @@
   
 &nbsp;해외 거래소(특히 뉴욕 거래소)에 상장된 ETF들은 [etf.com](https://www.etf.com/), [etfdb.com](https://etfdb.com/) 등의 전문 사이트에서 차트, 구성 종목, 분석내용 등 관련 정보를 자세히 찾아볼 수 있으나, 현재 **한국거래소에 상장된 ETF를 전문적으로 다룬 사이트는 없는 실정**입니다. 네이버, 다음 등의 포털사이트에서 증권시장에 대한 정보를 얻을 수 있지만, 시각화가 잘 되어있지 않아 초보자는 시장 동향을 파악하기 힘든 상황입니다.
 
-&nbsp;본 프로젝트로 개발한 웹 대시보드를 통해 많은 사용자들이 ETF 투자에 관심을 가지고, 건전한 투자 의식을 함양하기를 소망합니다. 내년 1~2월 즈음에 배포 예정입니다.
+&nbsp;본 프로젝트로 개발한 웹 대시보드를 통해 많은 사용자들이 ETF 투자에 관심을 가지고, 건전한 투자 의식을 함양하기를 소망합니다.
 
 
 ## 개발 및 실행 환경
