@@ -1,9 +1,9 @@
 # 한국 ETF 대시보드 개발 프로젝트 (개발중)
 [![ETF코리아](./assets/logo.png)](https://github.com/LoveDH/etf-kor.com/)
 
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=1L8xwpF_vRA_4HJp4fqJ2oJItUPawdUIb">
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=18lloze7Tp5vG2zbr235uHxJqmwDcJu2S">
-<img style="max-width: 50%; height: auto;" src="https://drive.google.com/uc?export=view&id=1vLY3ReR3zntn7LzSzgo0Vd06ra4UWYYZ">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1TlmnxWM2njjAx8D1eVeyHEm63R0NsnF9/view?usp=sharing">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1Vjy_HjiFQdx8PouL_bOW_VUJlh_QR7Kd/view?usp=sharing">
+<img style="max-width: 50%; height: auto;" src="https://drive.google.com/file/d/1AngnT2vwnLul6cIukmJy1otkHyqtlGOK/view?usp=sharingZ">
 
 ## 개요
 
