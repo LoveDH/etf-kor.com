@@ -52,7 +52,6 @@
 │   ├── pages.py : 페이지 레이아웃
 │   └── update_data.py : 데이터 업데이트
 ├── requirements.txt : 필요한 패키지
-└── source : 그래프 소스가 담겨있는 폴더(실행과 상관없음)
 ```
 
 ## 실행 방법
