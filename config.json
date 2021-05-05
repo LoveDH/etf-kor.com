@@ -1,12 +1,12 @@
 {
-    "MYSQL_INFO": {
-        "HOSTNAME": "localhost",
-        "PORT": 3306,
-        "USERNAME": "lovedh",
-        "PASSWORD": "",
-        "DATABASE": "etfkor",
-        "CHARSET1": "utf8",
-        "CHARSET2": "utf-8"
-    },
-    "LAST_UPDATE": "20000101"
+	"MYSQL_INFO": {
+		"HOSTNAME": "localhost",
+		"PORT": 3306,
+		"USERNAME": "lovedh",
+		"PASSWORD": "",
+		"DATABASE": "etfkor",
+		"CHARSET1": "utf8",
+		"CHARSET2": "utf-8"
+	},
+	"LAST_UPDATE": "20210429"
 }

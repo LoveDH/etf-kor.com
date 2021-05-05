@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import pandas as pd
 
-from lib import layouts as lo
+import layouts as lo
 from app import app
 import callbacks
 

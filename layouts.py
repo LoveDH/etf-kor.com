@@ -150,6 +150,7 @@ world = html.Div([
     ],style={'width':'100%'})
 ])
 
+# 비교
 screener = None
 compare = html.Div([
     html.Div(style={'height':'100'}),
