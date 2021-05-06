@@ -352,7 +352,7 @@ def get_etf_chart(symbol, period):
 
 # Search etf 포트폴리오 구성 파이 차트 호출
 def get_etf_pie_chart(symbol):
-    sql = "select 종목, 계약수, 금액, 비중 from etfkor."+symbol+'_pf'
+    sql = "select 종목명, 계약수, 금액, 비중 from etfkor."+symbol+'_pf'
 
     df = pd.DataFrame(get_data_from_db(sql),columns=['종목','계약수','금액','비중'])
     fig = px.pie(df.head(10), values='비중', names='종목')

@@ -13,12 +13,27 @@ from bs4 import BeautifulSoup
 
 # 한국 etf 리스트 불러오기
 def get_korean_etfs():
-    etf_info = fdr.EtfListing('KR')
+    etf_info = fdr.StockListing('ETF/KR')
     etf_info = pd.DataFrame(etf_info, columns=['Symbol','Name','now_price','ex_price',
                                                 'yield_from_ex','market_cap','listed_shares',
                                                 'commission','base_index','type1','type2','listed_day'])
     return etf_info
 
+# 종목 티커 불러오기
+def get_symbols():
+    features = ['Symbol','Name','Industry']
+    df_krx = fdr.StockListing('KRX')[features]
+    df_nasdaq = fdr.StockListing('NASDAQ')[features]
+    df_nyse = fdr.StockListing('NYSE')[features]
+    df_amex = fdr.StockListing('AMEX')[features]
+    df_all = pd.concat([df_krx, df_nasdaq, df_nyse, df_amex], axis=0)
+    df_all.drop_duplicates(subset=['Symbol'],inplace=True)
+    df_all.reset_index(drop=True, inplace=True)
+    df_all.fillna('알 수 없음', inplace=True)
+    df_all = df_all.rename(columns={'Symbol':'티커','Name':'종목명','Industry':'산업군'})
+    return df_all
+
+# etf 정보 불러오기
 def get_etf_info_from_naver(etf_info):
 
     for idx in range(len(etf_info)):
@@ -74,7 +89,7 @@ def get_stock_prices(Symbol, last_update, today, conn):
         print(Symbol)
         start = datetime.strftime(datetime.strptime(last_update,'%Y%m%d') + timedelta(days=1), '%Y%m%d')
         stock_df = stock.get_etf_ohlcv_by_date(start, today, Symbol)
-        stock_df.to_sql(name=Symbol, con=conn, if_exists='append', index=True)
+        stock_df.to_sql(name=Symbol, con=conn, if_exists='replace', index=True)
     except:
         print(Symbol+':데이터 불러오기 실패', end= ' ')
 
@@ -96,13 +111,14 @@ def get_world_indice_data(conn):
     print('...지수 데이터 수집 완료')
 
 # 포트폴리오 데이터 수집
-def get_portfolio_data(symbols, num_symbols, conn):
+def get_portfolio_data(etf_symbols, stock_symbols, num_symbols, conn):
     count = 1
 
-    for symbol in symbols:
+    for symbol in etf_symbols:
         print("{} {}/{}".format(symbol, count, num_symbols))
         try:
             portfolio = stock.get_etf_portfolio_deposit_file(symbol)
+            portfolio = pd.merge(portfolio, stock_symbols, how='left', on='티커')
             portfolio.reset_index(inplace=True)
             portfolio.to_sql(name=symbol+'_pf', con=conn, if_exists='replace', index=False)
             count+=1
@@ -141,7 +157,7 @@ if __name__=='__main__':
     etf_info = get_korean_etfs()
 
     # etf 정보 dataframe
-    print('...ETF 정보 수집중')
+    print('...ETF 정보 수집 중')
     etf_info = get_etf_info_from_naver(etf_info)
     etf_info.to_sql(name='etfList', con=conn, if_exists='replace', index=False)
     print('...ETF 정보 리스트 저장 완료')
@@ -167,11 +183,16 @@ if __name__=='__main__':
     get_world_indice_data(conn)
     print('...세계 지수 데이터 저장 완료')
 
+    # 상장 종목 티커, 이름 저장
+    print('...상장 종목 불러오는 중')
+    stock_symbols = get_symbols()
+    print('...상장 종목 저장 완료')
+
     # 포트폴리오 데이터 저장
     print('...포트폴리오 데이터 수집 중')
-    symbols = etf_info['Symbol']
-    num_symbols = len(symbols)
-    get_portfolio_data(symbols, num_symbols, conn)
+    etf_symbols = etf_info['Symbol']
+    num_symbols = len(etf_symbols)
+    get_portfolio_data(etf_symbols, stock_symbols, num_symbols, conn)
     print('...포트폴리오 데이터 수집 완료')
 
 
